@@ -1,0 +1,7 @@
+shirasu:
+  listen:
+    port: 8000
+
+shirasu_http_serve:
+  /: priv/sample/www
+
