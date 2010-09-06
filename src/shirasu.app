@@ -9,5 +9,6 @@
   {registered, []},
   {mod, {shirasu_app, []}},
   {env, []},
+  {setting, "priv/setting.yaml"},
   {applications, [kernel, stdlib]}]}.
 

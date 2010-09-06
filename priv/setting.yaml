@@ -5,3 +5,5 @@ shirasu:
 shirasu_http_serve:
   /: priv/sample/www
 
+port: 8000
+

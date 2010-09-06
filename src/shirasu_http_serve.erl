@@ -1,8 +1,8 @@
 -module(shirasu_http_serve).
 -author('Takanao ENDOH <djmchl@gmail.com>').
--export([start/1, handle_http/1]).
+-export([start/0, handle_http/1]).
 
-start(Opt) ->
+start() ->
     ok.
 
 handle_http(Req) ->

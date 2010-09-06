@@ -1,18 +1,24 @@
 -module(shirasu).
 -author('Takanao ENDOH <djmchl@gmail.com>').
--export([start/0, start/1, stop/0]).
+-export([start/0, stop/0, boot/0, cfg/1, cfgManager/1]).
 
 start() ->
     application:start(shirasu).
 
-start(Port) ->
-    error_logger:info_msg("shirasu:start~n"),
-    Manager = spawn(shirasu_websocket, wsManager, []),
-    Options = {},
-    _Stock = spawn(stock, start, [Options]),
-    _TWStream = spawn(shirasu_http_stream, start, [Options]),
+stop() ->
+    wsManager ! stop,
+    cfgManager ! stop,
+    misultin:stop().
+
+boot() ->
+    {ok, Path} = application:get_env(shirasu, setting),
+    {ok, Cfg} = loadCfg(Path),
+    register(cfgManager, spawn(?MODULE, cfgManager, [Cfg])),
+    spawn(shirasu_websocket, wsManager, []),
+    _Stock = spawn(stock, start, []),
+    _TWStream = spawn(shirasu_http_stream, start, []),
     misultin:start_link([
-        {port, Port},
+        {port, cfg("port")},
         {loop, fun(Req) ->
                     shirasu_http_serve:handle_http(Req) end},
         {ws_loop, fun(Ws) ->
@@ -20,7 +26,27 @@ start(Port) ->
         {ws_autoexit, false}
     ]).
 
-stop() ->
-    wsManager ! stop,
-    misultin:stop().
+cfg(Key) ->
+    cfgManager ! {self(), get, Key},
+    receive
+        {ok, Value} ->
+            Value
+    end.
+
+loadCfg(Path) ->
+    Setting =  os:cmd("/usr/bin/env python -c '\
+import json, yaml;\
+print json.dumps(yaml.load(open(\"" ++ Path ++ "\")));\
+'"),
+    {ok, Cfg, _} = rfc4627:decode(Setting),
+    {ok, Cfg}.
+cfgManager(Cfg) ->
+    receive
+        {Pid, get, Key} ->
+            {ok, Value} = rfc4627:get_field(Cfg, Key),
+            Pid ! {ok, Value};
+        _Any ->
+            pass
+    end,
+    cfgManager(Cfg).
 
