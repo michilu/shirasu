@@ -18,7 +18,7 @@ boot() ->
     _Stock = spawn(stock, start, []),
     _TWStream = spawn(shirasu_http_stream, start, []),
     misultin:start_link([
-        {port, cfg("port")},
+        {port, cfg(["shirasu", "listen", "port"])},
         {loop, fun(Req) ->
                     shirasu_http_serve:handle_http(Req) end},
         {ws_loop, fun(Ws) ->
@@ -40,13 +40,22 @@ print json.dumps(yaml.load(open(\"" ++ Path ++ "\")));\
 '"),
     {ok, Cfg, _} = rfc4627:decode(Setting),
     {ok, Cfg}.
+
 cfgManager(Cfg) ->
     receive
         {Pid, get, Key} ->
-            {ok, Value} = rfc4627:get_field(Cfg, Key),
+            {ok, Value} = get_field(Cfg, Key),
             Pid ! {ok, Value};
         _Any ->
             pass
     end,
     cfgManager(Cfg).
+
+get_field(Value, []) ->
+    {ok, Value};
+get_field(Json, [Key|KeyList]) ->
+    case rfc4627:get_field(Json, Key) of
+        {ok, Value} ->
+            get_field(Value, KeyList)
+    end.
 
