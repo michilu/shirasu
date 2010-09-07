@@ -12,11 +12,11 @@ stop() ->
 
 boot() ->
     {ok, Path} = application:get_env(shirasu, setting),
-    {ok, Cfg} = loadCfg(Path),
-    register(cfgManager, spawn(?MODULE, cfgManager, [Cfg])),
+    {ok, Config} = loadConfig(Path),
+    register(cfgManager, spawn(?MODULE, cfgManager, [Config])),
+    Modules = getModules(),
+    lists:map(fun(Module) -> register(Module, spawn(Module, start, [])) end, Modules),
     spawn(shirasu_websocket, wsManager, []),
-    _Stock = spawn(stock, start, []),
-    _TWStream = spawn(shirasu_http_stream, start, []),
     misultin:start_link([
         {port, cfg(["shirasu", "listen", "port"])},
         {loop, fun(Req) ->
@@ -33,7 +33,7 @@ cfg(Key) ->
             Value
     end.
 
-loadCfg(Path) ->
+loadConfig(Path) ->
     Setting =  os:cmd("/usr/bin/env python -c '\
 import json, yaml;\
 print json.dumps(yaml.load(open(\"" ++ Path ++ "\")));\
@@ -58,4 +58,15 @@ get_field(Json, [Key|KeyList]) ->
         {ok, Value} ->
             get_field(Value, KeyList)
     end.
+
+getModules() ->
+    {obj, FieldList} = cfg([]),
+    Modules = lists:filter(fun(X) ->
+                                case X of
+                                    shirasu -> false;
+                                    _ -> true
+                                end
+                           end,
+                           lists:map(fun({Key, _Fields}) -> list_to_atom(Key) end, FieldList)),
+    Modules.
 
