@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Twitter Streaming over WebSocket</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script src="http://people.iola.dk/olau/flot/jquery.flot.js"></script>
+<script src="http://people.iola.dk/olau/flot/jquery.flot.stack.js"></script>
+<script>
+window.onload = function() {
+    var data = {};
+    var times = [];
+    var s = new WebSocket("ws://localhost:8000/");
+    s.onopen = function() {
+        //s.send('hello');
+    };
+    s.onmessage = function(e) {
+      //$("#debug").text(e.data);
+      var json = $.parseJSON(e.data);
+      if (json != null) {
+        var $lines = $("#lines")
+        $lines.prepend("<span>@" + json["user"]["screen_name"] + ": " + json["text"] + "<br /></span>");
+        if ( $lines.children().length > 10) {
+          $lines.children().last().remove();
+        };
+
+        var lang = json["user"]["lang"];
+        if (!(lang in data)) data[lang] = [];
+        var created_at_raw = new Date(json["created_at"]);
+        var created_at = created_at_raw.getTime();
+
+        //times.push(created_at);
+        //if (times.length > 1000) {
+        //  data = {};
+        //  times = [];
+        //};
+        //if (!($.inArray(created_at, times))) times.push(created_at);
+        //if (times.length > 200) {
+        //  times.sort();
+        //  for (var i = 0; i < times.length - 200; i++) {
+        //    times.shift();
+        //  };
+        //};
+        if (!(created_at in data[lang])) data[lang][created_at] = 0;
+        data[lang][created_at] += 1;
+
+        var plots = [];
+        for (var k in data) {
+          var d = [];
+          for (var t in data[k]) {
+            //if ($.inArray(t, times)) {
+              d.push([t, data[k][t]]);
+            //};
+          };
+          plots.push( {
+            label: k,
+            data: d
+          } );
+        };
+        $.plot( $("#holder"), plots,
+                {
+                  series: {
+                    stack: 0,
+                    lines: { show: false, fill: true },
+                    bars: { show: true, barWidth: 950, fill: 0.6 },
+                  },
+                  legend: { noColumns: 10 },
+                  xaxis: { ticks: [] },
+                  yaxis: { min: 0 },
+                } );
+      };
+
+      //s.send('ok');
+    };
+};
+</script>
+</head>
+<body>
+<h1>Twitter Streaming over WebSocket</h1>
+<div id="holder" style="width:600px;height:300px"></div>
+<div id="lines" style="height:200px"></div>
+<div id="debug"></div>
