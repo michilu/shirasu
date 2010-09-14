@@ -9,7 +9,7 @@ handle_websocket(Ws) ->
                     handle_websocket(Ws);
             closed ->
                     wsManager ! {del, Ws:get(path), self()},
-                    error_logger:info_msg("~p~n", ["ws:close"]),
+                    %error_logger:info_msg("~p~n", ["ws:close"]),
                     exit(self(), kill);
             {send, Data} ->
                     %error_logger:info_msg("~p~n", [{"ws:send", Data}]),
@@ -41,9 +41,10 @@ wsManager(ChannelList) ->
                         true ->
                             wsManager(ChannelList);
                         false ->
-                            NewPidList = [Pid] ++ PidList,
-                            %error_logger:info_msg("wsManager:PidList:~p~n", [NewPidList]),
-                            wsManager(lists:keyreplace(Channel, 1, ChannelList, NewPidList))
+                            NewPidList = lists:append([Pid], PidList),
+                            NewChannelList = lists:keyreplace(Channel, 1, ChannelList, {Channel, NewPidList}),
+                            %error_logger:info_msg("wsManager:PidList:~p~n", [{NewChannelList}]),
+                            wsManager(NewChannelList)
                     end;
                 false ->
                     wsManager(lists:append([{Channel, [Pid]}], ChannelList))
@@ -55,8 +56,9 @@ wsManager(ChannelList) ->
                     case lists:member(Pid, PidList) of
                         true ->
                             NewPidList = lists:delete(Pid, PidList),
-                            %error_logger:info_msg("wsManager:PidList:~p~n", [NewPidList]),
-                            wsManager(lists:keyreplace(Channel, 1, ChannelList, NewPidList));
+                            NewChannelList = lists:keyreplace(Channel, 1, ChannelList, {Channel, NewPidList}),
+                            %error_logger:info_msg("wsManager:PidList:~p~n", [{NewChannelList}]),
+                            wsManager(NewChannelList);
                         false ->
                             wsManager(ChannelList)
                     end;
