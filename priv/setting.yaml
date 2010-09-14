@@ -6,5 +6,5 @@ shirasu_http_serve:
   /: priv/sample/www
 
 shirasu_http_stream:
-  url: "http://<SCREEN_NAME>:<PASSWORD>@stream.twitter.com/1/statuses/sample.json"
+  /stream.twitter.com/1/statuses/sample.json: "http://<SCREEN_NAME>:<PASSWORD>@stream.twitter.com/1/statuses/sample.json"
 
