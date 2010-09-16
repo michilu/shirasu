@@ -15,6 +15,7 @@ boot() ->
     {ok, Config} = loadConfig(Path),
     register(cfgManager, spawn(?MODULE, cfgManager, [Config])),
     Modules = getModules(),
+    ok = inets:start(),
     lists:map(fun(Module) -> register(Module, spawn(Module, start, [])) end, Modules),
     spawn(shirasu_websocket, wsManager, []),
     misultin:start_link([

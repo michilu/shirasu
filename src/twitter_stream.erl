@@ -41,7 +41,7 @@ fetch(URL) ->
 % single arg version expects url of the form http://user:password@stream.twitter.com/1/statuses/sample.json
 % this will spawn the 3 arg version so the shell is free
 fetch(URL, Callback) ->
-  spawn(?MODULE, fetch, [URL, Callback, 5, 30]).
+  fetch(URL, Callback, 5, 30).
  
 % 3 arg version expects url of the form http://user:password@stream.twitter.com/1/statuses/sample.json  
 % retry - number of times the stream is reconnected
@@ -49,7 +49,6 @@ fetch(URL, Callback) ->
 fetch(URL, Callback, Retry, Sleep) when Retry > 0 ->
   % setup the request to process async
   % and have it stream the data back to this process
-  ok = inets:start(),
   try http:request(get, 
                     {URL, []},
                     [], 
