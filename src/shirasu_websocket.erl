@@ -5,7 +5,8 @@
 handle_websocket(Ws) ->
     receive
             {browser, Data} ->
-                    Ws:send(["received '", Data, "'"]),
+                    %error_logger:info_msg("~p~n", [{"ws:browser", Data}]),
+                    wsManager ! {send, Ws:get(path), Data},
                     handle_websocket(Ws);
             closed ->
                     wsManager ! {del, Ws:get(path), self()},
