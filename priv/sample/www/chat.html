@@ -1,6 +1,10 @@
 <html>
 <head>
-  <title>Basic WebSocket Example: Chat</title>
+  <title>Chat via WebSocket</title>
+  <!--
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+  -->
+  <script src="jquery.min.js"></script>
   <script type="text/javascript">
 
     // I adapted this code from a Jetty Server example.
@@ -24,7 +28,6 @@
           $('connect').className='hidden';
           $('connected').className='';
           $('phrase').focus();
-          client._send('client-connected');
        },
 
        _send: function(message){
@@ -40,14 +43,7 @@
         _onmessage: function(m) {
           if (m.data){
             var text = m.data;
-            var msg=$('msgs');
-            var spanText = document.createElement('span');
-            spanText.className='text';
-            spanText.innerHTML=text;
-            var lineBreak = document.createElement('br');
-            msg.appendChild(spanText);
-            msg.appendChild(lineBreak);
-            msg.scrollTop = msg.scrollHeight - msg.clientHeight;
+            jQuery("#msgs").prepend("<span>" + text + "</br></span>");
           }
         },
 
@@ -66,20 +62,26 @@
 
 </head>
 <body>
-  <h1>Basic Chat Example</h1>
-  <div id="msgs"></div>
+  <h1>Chat via WebSocket</h1>
   <div id="connect">
      <input id='cA' class='button' type='submit' name='connect' value='Connect'/>
   </div>
   <br/>
   <div id="connected" class="hidden">
+    Your Name:&nbsp;<input id='name' type='text'/></br>
     Say Something:&nbsp;<input id='phrase' type='text'/>
     <input id='sendB' class='button' type='submit' name='connect' value='Send'/>
   </div>
+  <div id="msgs"></div>
 
   <script type='text/javascript'>
     $('cA').onclick = function(event) { client.connect(); return false; };
-    $('sendB').onclick = function(event) { client.chat($F('phrase')); $('phrase').value=''; return false; };	
+    $('sendB').onclick = function(event) {
+      client.chat($F('name') + ": " + $F('phrase'));
+      $('phrase').value = '';
+      $('phrase').focus();
+      return false;
+    };
  </script>
   </body>
 </html>
