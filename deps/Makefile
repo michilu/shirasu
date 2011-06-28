@@ -23,8 +23,8 @@ update: misultin erlang-rfc4627
 	(cd erlang-rfc4627; git pull)
 
 misultin:
-	(git clone http://github.com/ostinelli/misultin.git)
+	(git clone git://github.com/ostinelli/misultin.git)
 
 erlang-rfc4627:
-	(git clone http://github.com/tonyg/erlang-rfc4627.git)
+	(git clone git://github.com/tonyg/erlang-rfc4627.git)
 

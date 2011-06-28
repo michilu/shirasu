@@ -26,5 +26,5 @@ serve:
 
 debug:
 	($(MAKE) clean; $(MAKE))
-	(erl -pa $$PWD/ebin deps/*/ebin -boot start_sasl -s shirasu -shirasu setting \"priv/mysetting.yaml\")
+	(erl -pa $$PWD/ebin deps/*/ebin -boot start_sasl -s shirasu -shirasu setting \"priv/debug_setting.yaml\")
 
