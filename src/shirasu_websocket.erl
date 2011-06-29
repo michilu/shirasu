@@ -1,5 +1,5 @@
 -module(shirasu_websocket).
--author('Takanao ENDOH <djmchl@gmail.com>').
+-author('ENDOH takanao <djmchl@gmail.com>').
 -export([handle_websocket/2, wsManager/0]).
 
 -include_lib("eunit/include/eunit.hrl").

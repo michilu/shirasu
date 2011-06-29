@@ -1,5 +1,5 @@
 -module(shirasu).
--author('Takanao ENDOH <djmchl@gmail.com>').
+-author('ENDOH takanao <djmchl@gmail.com>').
 -export([start/0, stop/0, boot/0, cfg/1, cfgManager/1]).
 
 -include_lib("eunit/include/eunit.hrl").

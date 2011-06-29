@@ -1,5 +1,5 @@
 -module(shirasu_http_stream).
--author('Takanao ENDOH <djmchl@gmail.com>').
+-author('ENDOH takanao <djmchl@gmail.com>').
 
 -export([start/0, stop/0, processing/1, fetch/2, buffer/0]).
 

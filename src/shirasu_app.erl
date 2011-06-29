@@ -1,5 +1,5 @@
 -module(shirasu_app).
--author('Takanao ENDOH <djmchl@gmail.com>').
+-author('ENDOH takanao <djmchl@gmail.com>').
 
 -behaviour(application).
 
