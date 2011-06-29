@@ -4,7 +4,7 @@
 -export([start/0, stop/0, processing/1, fetch/2, buffer/0]).
 
 start() ->
-    {obj, CfgList} = shirasu:cfg(["shirasu_http_stream"]),
+    CfgList = shirasu:cfg(["shirasu_http_stream"]),
     Buffer = spawn(?MODULE, buffer, []),
     lists:foreach(fun({Channel, Url}) ->
                       Fun = fun(Data) ->
