@@ -1,53 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Exchange Chart via WebSocket</title>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
-<script src="http://people.iola.dk/olau/flot/jquery.flot.js"></script>
-<script>
-window.onload = function() {
-    var data = {};
-    data["yen"] = [];
-    data["volume"] = [];
-    var s = new WebSocket("ws://localhost:8000/exchange/USDJPY");
-    s.onopen = function() {
-        //s.send('hello');
-    };
-    s.onmessage = function(e) {
-      //$("#debug").text(e.data);
-      if (e.data) {
-        var line = e.data;
-        if (line.charAt(0) == "1") {
-          var rows = line.split(",");
-
-          var time = rows[0];
-          var yen = rows[1];
-          data["yen"].push([time, yen]);
-          if (data["yen"].length > 100) {
-            data["yen"].shift();
-          };
-
-          var plots = [];
-          plots.push( {
-            label: "USD/JPY",
-            data: data["yen"],
-            lines: { show: true },
-            bars: { show: false }
-          } );
-          $.plot( $("#holder"), plots,
-                  {
-                    xaxis: { ticks: [] },
-                    yaxis: { min: 83 },
-                  } );
-        };
-      };
-      //s.send('ok');
-    };
-};
-</script>
+  <title>Exchange Chart via WebSocket</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+  <script src="https://www.google.com/jsapi"></script>
+  <script src="/scripts/exchange.js"></script>
 </head>
 <body>
 <h1>Exchange Chart via WebSocket</h1>
-<div id="holder" style="width:600px;height:300px"></div>
-<div id="lines" style="height:200px"></div>
+<div id="holder" style="width:1300px;height:500px"></div>
 <div id="debug"></div>

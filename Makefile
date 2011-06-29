@@ -5,6 +5,7 @@ REBAR=./rebar
 
 all:
 	@$(REBAR) get-deps compile
+	@cd priv/sample ; $(MAKE)
 
 edoc:
 	@$(REBAR) doc
