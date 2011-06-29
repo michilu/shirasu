@@ -7,9 +7,15 @@ start() ->
     CfgList = shirasu:cfg(["shirasu_http_stream"]),
     Buffer = spawn(?MODULE, buffer, []),
     lists:foreach(fun({Channel, Url}) ->
+                      case is_bitstring(Channel) of
+                          true ->
+                              Channel_ = bitstring_to_list(Channel);
+                          false ->
+                              Channel_ = Channel
+                      end,
                       Fun = fun(Data) ->
-                                %error_logger:info_msg("~p~n", [{shirasu_http_stream, twitter_stream, Channel, Data}]),
-                                Buffer ! {Channel, Data}
+                                %error_logger:info_msg("~p~n", [{shirasu_http_stream, twitter_stream, Channel_, Data}]),
+                                Buffer ! {Channel_, Data}
                             end,
                       case is_bitstring(Url) of
                           true ->
