@@ -1,31 +1,52 @@
 (function() {
-  var chart, drawVisualization;
+  var buffer, chart, count, data, drawVisualization, flag, recieved, stop, ws;
+  ws = new WebSocket("ws://localhost:8000/exchange/USDJPY");
+  count = 70;
+  buffer = 300;
+  recieved = 0;
+  flag = null;
+  stop = null;
   chart = null;
+  data = [];
   google.load('visualization', '1', {
     packages: ['corechart']
   });
   google.setOnLoadCallback(function() {
     chart = new google.visualization.CandlestickChart(document.getElementById('holder'));
+    google.visualization.events.addListener(chart, 'onmouseover', function() {
+      return stop = true;
+    });
+    google.visualization.events.addListener(chart, 'onmouseout', function() {
+      return stop = false;
+    });
     drawVisualization([["loading...", 100, 100, 100, 100]], 'out');
   });
-  drawVisualization = function(data, hAxis_textPosition) {
+  drawVisualization = function(raws, hAxis_textPosition) {
     var dataTable;
-    dataTable = google.visualization.arrayToDataTable(data, true);
+    dataTable = google.visualization.arrayToDataTable(raws, true);
     chart.draw(dataTable, {
+      title: "Exchange Chart via WebSocket: USD/JPY (buffering " + data.length + " data, recieved " + recieved + " data)",
       legend: 'none',
       hAxis: {
         textPosition: hAxis_textPosition != null ? hAxis_textPosition : 'none'
       }
     });
   };
+  setInterval(function() {
+    if (!stop && data.length >= count) {
+      drawVisualization(data.slice(0, count));
+      data.shift();
+      return flag = false;
+    } else {
+      return flag = true;
+    }
+  }, 300);
   $(function() {
-    var data, ws;
-    data = [];
-    ws = new WebSocket("ws://localhost:8000/exchange/USDJPY");
     ws.onopen = function() {};
     ws.onmessage = function(e) {
       var i, index, line, rows, _len, _ref;
-      if (e.data) {
+      recieved += 1;
+      if (e.data && flag) {
         line = e.data;
         if (line.charAt(0) === "1") {
           rows = line.split(",").slice(0, 5);
@@ -38,10 +59,6 @@
           data.push(rows);
         }
       }
-      while (data.length > 30) {
-        data.shift();
-      }
-      drawVisualization(data);
     };
   });
 }).call(this);
