@@ -36,7 +36,7 @@ processing(_Data) ->
     ok.
 
 fetch([H|T], Fun) ->
-    %error_logger:info_msg("~p~n", [{shirasu_http_stream, fetch, H, T}]),
+    %?debugVal({H, T}),
     twitter_stream:fetch(bitstring_to_list(H), Fun),
     fetch(T ++ [H], Fun).
 
@@ -57,7 +57,7 @@ buffer(BufferList) ->
                     NewBufferList = lists:append([{Channel, Bits}], BufferList)
             end,
             lists:map(fun(Line) ->
-                          %error_logger:info_msg("~p~n", [{shirasu_http_stream, buffer, Line}]),
+                          %?debugVal(Line),
                           wsManager ! {send, Channel, Line}
                       end,
                       lists:reverse(Lines));

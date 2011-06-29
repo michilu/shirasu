@@ -89,5 +89,5 @@ wsManager(ChannelList) ->
         stop ->
             exit(normal);
         Any ->
-            error_logger:info_msg("wsManager:receive:Any:~p~n", [Any])
+            ?debugVal(Any)
     end.
