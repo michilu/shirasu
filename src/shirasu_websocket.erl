@@ -2,18 +2,20 @@
 -author('Takanao ENDOH <djmchl@gmail.com>').
 -export([handle_websocket/2, wsManager/0]).
 
+-include_lib("eunit/include/eunit.hrl").
+
 handle_websocket(Ws) ->
     receive
             {browser, Data} ->
-                    %error_logger:info_msg("~p~n", [{"ws:browser", Data}]),
+                    %?debugVal({"ws:browser", Data}),
                     wsManager ! {send, Ws:get(path), Data},
                     handle_websocket(Ws);
             closed ->
                     wsManager ! {del, Ws:get(path), self()},
-                    %error_logger:info_msg("~p~n", ["ws:close"]),
+                    %?debugVal("ws:close"),
                     exit(self(), kill);
             {send, Data} ->
-                    %error_logger:info_msg("~p~n", [{"ws:send", Data}]),
+                    %?debugVal({"ws:send", Data}),
                     Ws:send(Data),
                     handle_websocket(Ws);
             _Ignore ->
@@ -24,7 +26,7 @@ handle_websocket(Ws) ->
     end.
 
 handle_websocket(new, Ws) ->
-    %error_logger:info_msg("~p~n", [{"handle_websocket:new:", Ws:get(path)}]),
+    %?debugVal({"handle_websocket:new:", Ws:get(path)}),
     wsManager ! {add, Ws:get(path), self()},
     handle_websocket(Ws).
 
@@ -35,7 +37,7 @@ wsManager() ->
 wsManager(ChannelList) ->
     receive
         {add, Channel, Pid} ->
-            %error_logger:info_msg("wsManager:receive:~p~n", [{add, Channel, Pid}]),
+            %?debugVal({add, Channel, Pid}),
             case lists:keysearch(Channel, 1, ChannelList) of
                 {value, {Channel, PidList}} ->
                     case lists:member(Pid, PidList) of
@@ -44,21 +46,21 @@ wsManager(ChannelList) ->
                         false ->
                             NewPidList = lists:append([Pid], PidList),
                             NewChannelList = lists:keyreplace(Channel, 1, ChannelList, {Channel, NewPidList}),
-                            %error_logger:info_msg("wsManager:PidList:~p~n", [{NewChannelList}]),
+                            %?debugVal(NewChannelList),
                             wsManager(NewChannelList)
                     end;
                 false ->
                     wsManager(lists:append([{Channel, [Pid]}], ChannelList))
             end;
         {del, Channel, Pid} ->
-            %error_logger:info_msg("wsManager:receive:~p~n", [{del, Channel, Pid}]),
+            %?debugVal({del, Channel, Pid}),
             case lists:keysearch(Channel, 1, ChannelList) of
                 {value, {Channel, PidList}} ->
                     case lists:member(Pid, PidList) of
                         true ->
                             NewPidList = lists:delete(Pid, PidList),
                             NewChannelList = lists:keyreplace(Channel, 1, ChannelList, {Channel, NewPidList}),
-                            %error_logger:info_msg("wsManager:PidList:~p~n", [{NewChannelList}]),
+                            %?debugVal(NewChannelList),
                             wsManager(NewChannelList);
                         false ->
                             wsManager(ChannelList)
@@ -67,7 +69,7 @@ wsManager(ChannelList) ->
                     wsManager(ChannelList)
             end;
         {get, Channel, Pid} ->
-            %error_logger:info_msg("wsManager:receive:~p~n", [{get, Channel, Pid}]),
+            %?debugVal({get, Channel, Pid}),
             case lists:keysearch(Channel, 1, ChannelList) of
                 {value, {Channel, PidList}} ->
                     Pid ! PidList;
@@ -76,7 +78,7 @@ wsManager(ChannelList) ->
             end,
             wsManager(ChannelList);
         {send, Channel, Data} ->
-            %error_logger:info_msg("wsManager:receive:~p~n", [{send, Channel, Data}]),
+            %?debugVal({send, Channel, Data}),
             case lists:keysearch(Channel, 1, ChannelList) of
                 {value, {_Channel, PidList}} ->
                     lists:map(fun(PID) -> PID ! {send, Data} end, PidList);
@@ -89,4 +91,3 @@ wsManager(ChannelList) ->
         Any ->
             error_logger:info_msg("wsManager:receive:Any:~p~n", [Any])
     end.
-

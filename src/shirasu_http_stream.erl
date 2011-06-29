@@ -3,6 +3,8 @@
 
 -export([start/0, stop/0, processing/1, fetch/2, buffer/0]).
 
+-include_lib("eunit/include/eunit.hrl").
+
 start() ->
     CfgList = shirasu:cfg(["shirasu_http_stream"]),
     Buffer = spawn(?MODULE, buffer, []),
@@ -14,7 +16,7 @@ start() ->
                               Channel_ = Channel
                       end,
                       Fun = fun(Data) ->
-                                %error_logger:info_msg("~p~n", [{shirasu_http_stream, twitter_stream, Channel_, Data}]),
+                                %?debugVal({Channel_, Data}),
                                 Buffer ! {Channel_, Data}
                             end,
                       case is_bitstring(Url) of
@@ -76,4 +78,3 @@ splitlines(String, Parts, Index, [{NextPt, PtLen}|Matches]) ->
                [string:substr(String, Index, NextPt + PtLen - Index)] ++ Parts,
                NextPt + PtLen,
                Matches).
-

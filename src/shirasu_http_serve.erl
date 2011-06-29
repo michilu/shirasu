@@ -14,4 +14,3 @@ handle_http(Req) ->
             Path1 = Path
     end,
     Req:file("priv/sample/www" ++ Path1).
-

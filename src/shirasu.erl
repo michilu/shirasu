@@ -3,7 +3,7 @@
 -export([start/0, stop/0, boot/0, cfg/1, cfgManager/1]).
 
 -include_lib("eunit/include/eunit.hrl").
-%?debugVal(PropList),
+%?debugVal(),
 
 start() ->
     application:start(shirasu).
@@ -93,4 +93,3 @@ getModules() ->
                            end,
                            Keys),
     Modules.
-
