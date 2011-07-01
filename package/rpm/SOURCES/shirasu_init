@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# Shirasu WebSocket Server
+#
+# chkconfig: 2345 80 30
+# description: Shirasu is a WebSocket server.
+# processname: beam 
+# config: /etc/shirasu/app.config
+# config: /etc/shirasu/vm.args
+#
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+#check for script,config, and data dirs
+[ -x /usr/sbin/shirasu ] || exit 0
+[ -d /etc/shirasu ] || exit 0
+[ -d /var/lib/shirasu ] || exit 0
+[ -d /var/run/shirasu ] || exit 0
+
+RETVAL=0
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="a distributed key value store"
+NAME=shirasu
+DAEMON=/usr/sbin/$NAME
+
+
+start() {
+        #Check if Shirasu is running
+        RETVAL=`$DAEMON ping`
+        [ "$RETVAL" = "pong" ] && echo "Shirasu is already running" && return 1
+
+	# Start daemons.
+	echo -n $"Starting Shirasu: "
+	su - shirasu -c "$DAEMON start" && success || failure $"$NAME start"
+	RETVAL=$?
+	[ $RETVAL -eq 0 ]
+        echo
+	return $RETVAL
+}
+
+stop() {
+        # Stop daemon.
+	echo -n $"Stopping Shirasu: "
+  	RETVAL=`su - shirasu -c "$DAEMON ping"`
+  	[ "$RETVAL" = "pong" ] && su - shirasu -c "$DAEMON stop 2>/dev/null 1>&2" 
+        sleep 2
+        RETVAL=`pidof beam.smp`
+        [ "$RETVAL" = "" ] && success && echo && return 0 || failure $"$NAME stop"
+        sleep 10
+        RETVAL=`pidof beam.smp`
+        [ "$RETVAL" = "" ] && success && echo && return 0 || failure $"$NAME failed to stop"
+        echo
+        return 1
+
+}
+
+reload() {
+        # Restart the VM without exiting the process
+	echo -n $"Reloading Shirasu: "
+  	RETVAL=`su - shirasu -c "$DAEMON ping"`
+  	[ "$RETVAL" = "pong" ] && su - shirasu -c "$DAEMON restart 2>/dev/null 1>&2" \
+        && success && echo && return 0 || failure $"$NAME restart" 
+        echo
+	return $RETVAL
+}
+
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+ 	stop
+	start
+	;;
+  reload)
+	reload
+	;;
+  ping)
+	su - shirasu -c "$DAEMON ping" || exit $?
+        ;;
+  *)
+	echo $"Usage: $0 {start|stop|reload|restart|ping}"
+	exit 1
+esac
+
+exit $?
