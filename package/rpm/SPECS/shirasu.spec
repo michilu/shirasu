@@ -9,19 +9,22 @@ Version: %{_version}
 Release: %{_release}%{?dist}
 License: New BSD License
 Group: Development/Libraries
-Source: http://bitbucket.org/michilu/shirasu/get/%{name}-%{_revision}.tar.gz
+Source: http://code.google.com/p/shirasu/downloads/list/%{name}-%{_revision}.tar.gz
 Source1: shirasu_init
 URL: http://www.shirasu.ws
 Vendor: MiCHiLU Labs.
 Packager: MiCHiLU Labs. <shirasu-user@michilu.com>
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Summary: Shirasu WebSocket Server
-Requires: erlang
+Requires: erlang-mochiweb
+Requires: erlang-misultin
+Requires: PyYAML
 
 %description
 Shirasu is a WebSocket server.
 
-%define shirasu_lib %{_libdir}/%{name}
+%define erlang_lib %{_libdir}/erlang
+%define shirasu_lib /lib/%{name}-%{_revision}
 %define init_script %{_sysconfdir}/init.d/%{name}
 
 %define __prelink_undo_cmd /bin/cat prelink library
@@ -53,7 +56,7 @@ cat > rel/vars.config <<EOF
 {node,         "shirasu@127.0.0.1"}.
 % bin/shirasu*
 {runner_script_dir,  "%{_sbindir}"}.
-{runner_base_dir,    "%{shirasu_lib}"}.
+{runner_base_dir,    "%{erlang_lib}"}.
 {runner_etc_dir,     "%{_sysconfdir}/%{name}"}.
 {runner_log_dir,     "%{_localstatedir}/log/%{name}"}.
 {pipe_dir,           "%{_localstatedir}/run/%{name}/"}.
@@ -62,11 +65,15 @@ EOF
 
 %build
 mkdir %{name}
-make rel
+make rel4fedora
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}
-mkdir -p %{buildroot}%{shirasu_lib}
+mkdir -p %{buildroot}%{erlang_lib}/lib/%{name}-%{_version}/bin
+erts=`find $RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/erts-* -name bin -type d`
+erts=${erts%/*}
+erts=${erts##*/}
+mkdir -p %{buildroot}%{erlang_lib}/${erts}/bin
 #mkdir -p %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/dets
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/bitcask
@@ -77,11 +84,10 @@ mkdir -p %{buildroot}%{_localstatedir}/run/%{name}
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/mr_queue
 
 #Copy all necessary lib files etc.
-cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/lib %{buildroot}%{shirasu_lib}
-cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/erts-* \
-		%{buildroot}%{shirasu_lib}
+cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/ebin \
+		%{buildroot}%{erlang_lib}/lib/%{name}-%{_version}
 cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/releases \
-		%{buildroot}%{shirasu_lib}
+		%{buildroot}%{erlang_lib}/lib/%{name}-%{_version}
 #cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/doc/man/man1/*.gz \
 #		%{buildroot}%{_mandir}/man1
 install -p -D -m 0644 \
@@ -96,6 +102,9 @@ install -p -D -m 0644 \
 install -p -D -m 0755 \
 	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/bin/%{name} \
 	%{buildroot}/%{_sbindir}/%{name}
+install -p -D -m 0755 \
+	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/erts-*/bin/nodetool \
+	%{buildroot}%{erlang_lib}/${erts}/bin/
 #install -p -D -m 0755 \
 #	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/bin/%{name}-admin \
 #	%{buildroot}/%{_sbindir}/%{name}-admin
@@ -120,7 +129,7 @@ fi
 
 %post
 # Fixup perms for SELinux
-find %{shirasu_lib} -name "*.so" -exec chcon -t textrel_shlib_t {} \;
+find %{erlang_lib}/lib/%{name}-%{_version} -name "*.so" -exec chcon -t textrel_shlib_t {} \;
 
 %files
 %defattr(-,shirasu,shirasu)
