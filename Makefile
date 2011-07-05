@@ -65,7 +65,7 @@ serve:
 
 debug:
 	($(MAKE))
-	(erl -pa $$PWD/ebin deps/*/ebin -boot start_sasl -s shirasu -shirasu setting \"priv/debug_setting.yaml\")
+	(erl -pa $$PWD/ebin deps/*/ebin -boot start_sasl -s shirasu -shirasu setting \"debug_setting.yaml\")
 
 # Release tarball creation
 # Generates a tarball that includes all the deps sources so no checkouts are necessary
