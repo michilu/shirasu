@@ -3,7 +3,7 @@ shirasu:
     port: 8000
 
 shirasu_http_serve:
-  /: priv/sample/www
+  /: /var/shirasu/sample/www
 
 shirasu_http_stream:
   /stream.twitter.com/1/statuses/sample.json: "http://<SCREEN_NAME>:<PASSWORD>@stream.twitter.com/1/statuses/sample.json"

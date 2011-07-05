@@ -11,7 +11,7 @@ REBAR=./rebar
 .PHONY: rel deps
 
 all: deps compile
-	@cd priv/sample ; $(MAKE)
+	@cd rel/files/sample ; $(MAKE)
 
 compile:
 	@$(REBAR) compile
