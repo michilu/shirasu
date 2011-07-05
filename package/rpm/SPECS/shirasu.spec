@@ -90,6 +90,9 @@ install -p -D -m 0644 \
 install -p -D -m 0644 \
 	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/etc/vm.args \
 	%{buildroot}%{_sysconfdir}/%{name}/
+install -p -D -m 0644 \
+	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/etc/shirasu.yaml \
+	%{buildroot}%{_sysconfdir}/%{name}/
 install -p -D -m 0755 \
 	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/bin/%{name} \
 	%{buildroot}/%{_sbindir}/%{name}
