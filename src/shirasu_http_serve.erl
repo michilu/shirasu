@@ -1,17 +1,11 @@
 -module(shirasu_http_serve).
--author('Takanao ENDOH <djmchl@gmail.com>').
+-author('ENDOH takanao <djmchl@gmail.com>').
 -export([start/0, handle_http/1]).
 
 start() ->
     ok.
 
 handle_http(Req) ->
+    Root = bitstring_to_list(shirasu:cfg(["shirasu_http_serve", "/"])),
     {abs_path, Path} = Req:get(uri),
-    case [lists:last(Path)] of
-        "/" ->
-            Path1 = Path ++ "index.html";
-        _ ->
-            Path1 = Path
-    end,
-    Req:file("priv/sample/www" ++ Path1).
-
+    Req:file(Root ++ Path).

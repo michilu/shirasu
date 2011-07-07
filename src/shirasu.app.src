@@ -1,0 +1,17 @@
+{application, shirasu,
+ [
+  {description, "shirasu"},
+  {vsn, "0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, {shirasu_app, []}},
+  {modules, [
+             shirasu,
+             shirasu_app,
+             shirasu_sup
+            ]},
+  {env, []}
+ ]}.

@@ -1,6 +1,6 @@
 -module(twitter_stream).
 -author('jebu@jebu.net').
--author('Takanao ENDOH <djmchl@gmail.com>').
+-author('ENDOH takanao <djmchl@gmail.com>').
 %% Origin: http://blog.jebu.net/2009/09/erlang-tap-to-the-twitter-stream/
 %% 
 %% Copyright (c) 2009, Jebu Ittiachen

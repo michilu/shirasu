@@ -1,15 +1,23 @@
 -module(shirasu_http_stream).
--author('Takanao ENDOH <djmchl@gmail.com>').
+-author('ENDOH takanao <djmchl@gmail.com>').
 
 -export([start/0, stop/0, processing/1, fetch/2, buffer/0]).
 
+-include_lib("eunit/include/eunit.hrl").
+
 start() ->
-    {obj, CfgList} = shirasu:cfg(["shirasu_http_stream"]),
+    CfgList = shirasu:cfg(["shirasu_http_stream"]),
     Buffer = spawn(?MODULE, buffer, []),
     lists:foreach(fun({Channel, Url}) ->
+                      case is_bitstring(Channel) of
+                          true ->
+                              Channel_ = bitstring_to_list(Channel);
+                          false ->
+                              Channel_ = Channel
+                      end,
                       Fun = fun(Data) ->
-                                %error_logger:info_msg("~p~n", [{shirasu_http_stream, twitter_stream, Channel, Data}]),
-                                Buffer ! {Channel, Data}
+                                %?debugVal({Channel_, Data}),
+                                Buffer ! {Channel_, Data}
                             end,
                       case is_bitstring(Url) of
                           true ->
@@ -28,7 +36,7 @@ processing(_Data) ->
     ok.
 
 fetch([H|T], Fun) ->
-    %error_logger:info_msg("~p~n", [{shirasu_http_stream, fetch, H, T}]),
+    %?debugVal({H, T}),
     twitter_stream:fetch(bitstring_to_list(H), Fun),
     fetch(T ++ [H], Fun).
 
@@ -49,7 +57,7 @@ buffer(BufferList) ->
                     NewBufferList = lists:append([{Channel, Bits}], BufferList)
             end,
             lists:map(fun(Line) ->
-                          %error_logger:info_msg("~p~n", [{shirasu_http_stream, buffer, Line}]),
+                          %?debugVal(Line),
                           wsManager ! {send, Channel, Line}
                       end,
                       lists:reverse(Lines));
@@ -70,4 +78,3 @@ splitlines(String, Parts, Index, [{NextPt, PtLen}|Matches]) ->
                [string:substr(String, Index, NextPt + PtLen - Index)] ++ Parts,
                NextPt + PtLen,
                Matches).
-

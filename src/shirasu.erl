@@ -1,6 +1,9 @@
 -module(shirasu).
--author('Takanao ENDOH <djmchl@gmail.com>').
+-author('ENDOH takanao <djmchl@gmail.com>').
 -export([start/0, stop/0, boot/0, cfg/1, cfgManager/1]).
+
+-include_lib("eunit/include/eunit.hrl").
+%?debugVal(),
 
 start() ->
     application:start(shirasu).
@@ -12,8 +15,8 @@ stop() ->
 
 boot() ->
     {ok, Path} = application:get_env(shirasu, setting),
-    {ok, Config} = loadConfig(Path),
-    register(cfgManager, spawn(?MODULE, cfgManager, [Config])),
+    {struct, PropList} = loadConfig(Path),
+    register(cfgManager, spawn(?MODULE, cfgManager, [PropList])),
     Modules = getModules(),
     ok = inets:start(),
     lists:map(fun(Module) -> register(Module, spawn(Module, start, [])) end, Modules),
@@ -39,35 +42,54 @@ loadConfig(Path) ->
 import json, yaml;\
 print json.dumps(yaml.load(open(\"" ++ Path ++ "\")));\
 '"),
-    {ok, Cfg, _} = rfc4627:decode(Setting),
-    {ok, Cfg}.
+    try
+      {struct, PropList} = mochijson2:decode(Setting),
+      {struct, PropList}
+    catch
+      throw:invalid_utf8 ->
+        {fail, "Invalid JSON: Illegal UTF-8 character"};
+      error:Error ->
+        {fail, "Invalid JSON: " ++ binary_to_list(list_to_binary(io_lib:format("~p", [Error])))}
+    end.
 
-cfgManager(Cfg) ->
+cfgManager(PropList) ->
     receive
-        {Pid, get, Key} ->
-            {ok, Value} = get_field(Cfg, Key),
+        {Pid, get, get_keys} ->
+            Term = lists:map(fun(Key) ->
+                                list_to_atom(bitstring_to_list(Key))
+                             end,
+                             proplists:get_keys(PropList)),
+            Pid ! {ok, Term};
+        {Pid, get, Keys} ->
+            KeyList = lists:map(fun(Key) ->
+                                    list_to_bitstring(Key)
+                                end,
+                                Keys),
+            {ok, Value} = get_field(PropList, KeyList),
             Pid ! {ok, Value};
         _Any ->
             pass
     end,
-    cfgManager(Cfg).
+    cfgManager(PropList).
 
 get_field(Value, []) ->
     {ok, Value};
-get_field(Json, [Key|KeyList]) ->
-    case rfc4627:get_field(Json, Key) of
-        {ok, Value} ->
+get_field(PropList, [Key|KeyList]) ->
+    case proplists:get_value(Key, PropList) of
+        %undefined -> TODO(ENDOH)
+        {struct, Value} ->
+            get_field(Value, KeyList);
+        Value ->
             get_field(Value, KeyList)
     end.
 
 getModules() ->
-    {obj, FieldList} = cfg([]),
+    Keys = cfg(get_keys),
     Modules = lists:filter(fun(X) ->
                                 case X of
                                     shirasu -> false;
                                     _ -> true
                                 end
                            end,
-                           lists:map(fun({Key, _Fields}) -> list_to_atom(Key) end, FieldList)),
+                           Keys),
     Modules.
-
