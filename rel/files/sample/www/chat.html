@@ -15,7 +15,7 @@
 
     var client = {
        connect: function(){
-         this._ws=new WebSocket("ws://localhost:8000/chat");
+         this._ws=new WebSocket("ws://"+window.location["host"]+"/chat");
          this._ws.onopen=this._onopen;
          this._ws.onmessage=this._onmessage;
          this._ws.onclose=this._onclose;
