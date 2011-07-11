@@ -72,7 +72,7 @@ erts=${erts%/*}
 erts=${erts##*/}
 mkdir -p %{buildroot}%{erlang_lib}/${erts}/bin
 #mkdir -p %{buildroot}%{_mandir}/man1
-mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}
+mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sample
 #mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/dets
 mkdir -p %{buildroot}%{_localstatedir}/log/%{name}
 mkdir -p %{buildroot}%{_localstatedir}/log/%{name}/sasl
@@ -85,6 +85,8 @@ cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/releases \
 		%{buildroot}%{erlang_lib}/lib/%{name}-%{_version}
 #cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/doc/man/man1/*.gz \
 #		%{buildroot}%{_mandir}/man1
+cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/files/sample/www \
+		%{buildroot}%{_localstatedir}/lib/%{name}/sample
 install -p -D -m 0644 \
 	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/etc/app.config \
 	%{buildroot}%{_sysconfdir}/%{name}/
