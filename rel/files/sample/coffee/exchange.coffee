@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-ws = new WebSocket "ws://localhost:8000/exchange/USDJPY"
+ws = new WebSocket "ws://#{window.location["host"]}/exchange/USDJPY"
 count = 70
 buffer = 300
 recieved = 0
