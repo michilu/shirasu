@@ -146,6 +146,9 @@ find %{erlang_lib}/lib/%{name}-%{_version} -name "*.so" -exec chcon -t textrel_s
 rm -rf %{buildroot}
 
 %changelog
+* Tue Jul 12 2011 ENDOH takanao <djmchl@gmail.com> 0.1.2
+- Fixed list of RPM requires.
+
 * Tue Jul 12 2011 ENDOH takanao <djmchl@gmail.com> 0.1.1
 - Included sample files.
 
