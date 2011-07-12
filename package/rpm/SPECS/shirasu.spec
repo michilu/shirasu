@@ -16,9 +16,10 @@ Vendor: MiCHiLU Labs.
 Packager: MiCHiLU Labs. <shirasu-user@michilu.com>
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Summary: Shirasu WebSocket Server
-Requires: erlang-mochiweb
-Requires: erlang-misultin
 Requires: PyYAML
+Requires: erlang-misultin
+Requires: erlang-mochiweb
+Requires: erlang-sasl
 
 %description
 Shirasu is a WebSocket server.
@@ -145,6 +146,9 @@ find %{erlang_lib}/lib/%{name}-%{_version} -name "*.so" -exec chcon -t textrel_s
 rm -rf %{buildroot}
 
 %changelog
+* Tue Jul 12 2011 ENDOH takanao <djmchl@gmail.com> 0.1.2
+- Fixed list of RPM requires.
+
 * Tue Jul 12 2011 ENDOH takanao <djmchl@gmail.com> 0.1.1
 - Included sample files.
 
