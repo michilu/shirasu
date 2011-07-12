@@ -1,7 +1,7 @@
 {application, shirasu,
  [
   {description, "shirasu"},
-  {vsn, "dev"},
+  {vsn, "0.1.2"},
   {registered, []},
   {applications, [
                   kernel,
