@@ -1,6 +1,6 @@
+debug_setting.yaml
 deps
 ebin
-priv/debug_setting.yaml
 tags
 
 syntax: glob

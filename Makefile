@@ -11,7 +11,7 @@ REBAR=./rebar
 .PHONY: rel deps
 
 all: deps compile
-	@cd priv/sample ; $(MAKE)
+	@cd rel/files/sample ; $(MAKE)
 
 compile:
 	@$(REBAR) compile
@@ -35,6 +35,10 @@ test:
 ##
 rel: deps
 	./rebar compile generate
+
+rel4fedora:
+	@mkdir -p deps
+	./rebar -C package/rpm/rebar.config compile generate
 
 relclean:
 	rm -rf rel/shirasu
@@ -65,7 +69,7 @@ serve:
 
 debug:
 	($(MAKE))
-	(erl -pa $$PWD/ebin deps/*/ebin -boot start_sasl -s shirasu -shirasu setting \"priv/debug_setting.yaml\")
+	(erl -pa $$PWD/ebin deps/*/ebin -boot start_sasl -s shirasu -shirasu setting \"debug_setting.yaml\")
 
 # Release tarball creation
 # Generates a tarball that includes all the deps sources so no checkouts are necessary
@@ -95,6 +99,19 @@ distdir:
 	$(if $(SHIRASU_TAG), $(call buildtar), $(error "You can't generate a release tarball from a non-tagged revision. Run 'git checkout <tag>', then 'make dist'"))
 
 dist $(SHIRASU_TAG).tar.gz: distdir
+	cd distdir; \
+	tar czf ../$(SHIRASU_TAG).tar.gz $(SHIRASU_TAG)
+
+buildtar4f = mkdir distdir && \
+		 git clone . distdir/shirasu-clone && \
+		 cd distdir/shirasu-clone && \
+		 git checkout $(SHIRASU_TAG) && \
+		 $(call archive,$(SHIRASU_TAG),..)
+
+distdir4f:
+	$(if $(SHIRASU_TAG), $(call buildtar4f), $(error "You can't generate a release tarball from a non-tagged revision. Run 'git checkout <tag>', then 'make dist'"))
+
+dist4fedora $(SHIRASU_TAG).tar.gz: distdir4f
 	cd distdir; \
 	tar czf ../$(SHIRASU_TAG).tar.gz $(SHIRASU_TAG)
 

@@ -1,14 +1,13 @@
 {application, shirasu,
  [
   {description, "shirasu"},
-  {vsn, "0.01"},
+  {vsn, "0.1.1"},
   {registered, []},
   {applications, [
                   kernel,
                   stdlib
                  ]},
   {mod, {shirasu_app, []}},
-  {setting, "priv/setting.yaml"},
   {modules, [
              shirasu,
              shirasu_app,

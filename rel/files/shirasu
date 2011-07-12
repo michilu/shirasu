@@ -6,6 +6,7 @@ RUNNER_SCRIPT_DIR={{runner_script_dir}}
 RUNNER_SCRIPT=${0##*/}
 
 RUNNER_BASE_DIR={{runner_base_dir}}
+SHIRASU_BASE_DIR=$RUNNER_BASE_DIR{{platform_lib_dir}}
 RUNNER_ETC_DIR={{runner_etc_dir}}
 RUNNER_LOG_DIR={{runner_log_dir}}
 PIPE_DIR={{pipe_dir}}
@@ -55,7 +56,7 @@ fi
 SCRIPT=`basename $0`
 
 # Parse out release and erts info
-START_ERL=`cat $RUNNER_BASE_DIR/releases/start_erl.data`
+START_ERL=`cat $SHIRASU_BASE_DIR/releases/start_erl.data`
 ERTS_VSN=${START_ERL% *}
 APP_VSN=${START_ERL#* }
 
@@ -63,7 +64,7 @@ APP_VSN=${START_ERL#* }
 ERTS_PATH=$RUNNER_BASE_DIR/erts-$ERTS_VSN/bin
 
 # Setup command to control the node
-NODETOOL="$ERTS_PATH/escript $ERTS_PATH/nodetool $NAME_ARG $COOKIE_ARG"
+NODETOOL="/usr/bin/env escript $ERTS_PATH/nodetool $NAME_ARG $COOKIE_ARG"
 
 # Scrape out SSL distribution config info from vm.args into $SSL_DIST_CONFIG
 rm -f $SSL_DIST_CONFIG
@@ -82,7 +83,7 @@ case "$1" in
         HEART_COMMAND="$RUNNER_SCRIPT_DIR/$SCRIPT start"
         export HEART_COMMAND
         mkdir -p $PIPE_DIR
-        $ERTS_PATH/run_erl -daemon $PIPE_DIR/ $RUNNER_LOG_DIR \
+        /usr/bin/env run_erl -daemon $PIPE_DIR/ $RUNNER_LOG_DIR \
             "exec $RUNNER_SCRIPT_DIR/$SCRIPT console" 2>&1
         ;;
 
@@ -138,7 +139,7 @@ case "$1" in
         fi
 
         shift
-        $ERTS_PATH/to_erl $PIPE_DIR
+        /usr/bin/env to_erl $PIPE_DIR
         ;;
 
     console)
@@ -149,10 +150,10 @@ case "$1" in
         fi
         # Setup beam-required vars
         ROOTDIR=$RUNNER_BASE_DIR
-        BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
+        BINDIR=$ERTS_PATH
         EMU=beam
         PROGNAME=`echo $0 | sed 's/.*\///'`
-        CMD="$BINDIR/erlexec -boot $RUNNER_BASE_DIR/releases/$APP_VSN/$SCRIPT \
+        CMD="$BINDIR/erlexec -boot $SHIRASU_BASE_DIR/releases/$APP_VSN/$SCRIPT \
             -embedded -config $RUNNER_ETC_DIR/app.config \
             -args_file $RUNNER_ETC_DIR/vm.args -- ${1+"$@"}"
         export EMU

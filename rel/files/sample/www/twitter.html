@@ -9,7 +9,7 @@
 window.onload = function() {
     var data = {};
     var times = [];
-    var s = new WebSocket("ws://localhost:8000/stream.twitter.com/1/statuses/sample.json");
+    var s = new WebSocket("ws://"+window.location["host"]+"/stream.twitter.com/1/statuses/sample.json");
     s.onopen = function() {
         //s.send('hello');
     };
