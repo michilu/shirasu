@@ -33,16 +33,13 @@ Shirasu is a WebSocket server.
 %setup -q -n %{name}-%{_revision}
 cat > rel/vars.config <<EOF
 % app.config
-{ring_state_dir, "%{_localstatedir}/lib/%{name}/ring"}.
 {web_ip,       "127.0.0.1"}.
 {web_port,     8098}.
 {handoff_port, 8099}.
 {pb_ip,        "127.0.0.1"}.
 {pb_port,      8087}.
-{bitcask_data_root, "%{_localstatedir}/lib/%{name}/bitcask"}.
 {sasl_error_log, "%{_localstatedir}/log/%{name}/sasl-error.log"}.
 {sasl_log_dir, "%{_localstatedir}/log/%{name}/sasl"}.
-{mapred_queue_dir, "%{_localstatedir}/lib/%{name}/mr_queue"}.
 {map_js_vms,   8}.
 {reduce_js_vms, 6}.
 {hook_js_vms, 2}.
@@ -75,13 +72,11 @@ erts=${erts%/*}
 erts=${erts##*/}
 mkdir -p %{buildroot}%{erlang_lib}/${erts}/bin
 #mkdir -p %{buildroot}%{_mandir}/man1
-mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/dets
-mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/bitcask
-mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/ring
+mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sample
+#mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/dets
 mkdir -p %{buildroot}%{_localstatedir}/log/%{name}
 mkdir -p %{buildroot}%{_localstatedir}/log/%{name}/sasl
 mkdir -p %{buildroot}%{_localstatedir}/run/%{name}
-mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/mr_queue
 
 #Copy all necessary lib files etc.
 cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/ebin \
@@ -90,6 +85,8 @@ cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/releases \
 		%{buildroot}%{erlang_lib}/lib/%{name}-%{_version}
 #cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/doc/man/man1/*.gz \
 #		%{buildroot}%{_mandir}/man1
+cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/files/sample/www \
+		%{buildroot}%{_localstatedir}/lib/%{name}/sample
 install -p -D -m 0644 \
 	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/etc/app.config \
 	%{buildroot}%{_sysconfdir}/%{name}/
@@ -148,6 +145,8 @@ find %{erlang_lib}/lib/%{name}-%{_version} -name "*.so" -exec chcon -t textrel_s
 rm -rf %{buildroot}
 
 %changelog
-* Fri Jul 1 2011 ENDOH takanao <djmchl@gmail.com> 0.1
-- First 0.1 build
+* Tue Jul 12 2011 ENDOH takanao <djmchl@gmail.com> 0.1.1
+- Included sample files.
 
+* Thu Jul 7 2011 ENDOH takanao <djmchl@gmail.com> 0.1
+- First 0.1 build.
