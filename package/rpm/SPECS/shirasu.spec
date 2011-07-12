@@ -21,8 +21,7 @@ Requires: erlang-misultin
 Requires: erlang-mochiweb
 Requires: erlang-sasl
 
-%description
-Shirasu is a WebSocket server.
+%description Shirasu is a WebSocket server.
 
 %define erlang_lib %{_libdir}/erlang
 %define shirasu_lib /lib/%{name}-%{_revision}
@@ -147,10 +146,10 @@ rm -rf %{buildroot}
 
 %changelog
 * Tue Jul 12 2011 ENDOH takanao <djmchl@gmail.com> 0.1.2
-- Fixed list of RPM requires.
+- fixed list of RPM requires
 
 * Tue Jul 12 2011 ENDOH takanao <djmchl@gmail.com> 0.1.1
-- Included sample files.
+- included sample files
 
 * Thu Jul 7 2011 ENDOH takanao <djmchl@gmail.com> 0.1
-- First 0.1 build.
+- first 0.1 build
