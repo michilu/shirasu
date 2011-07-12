@@ -16,9 +16,10 @@ Vendor: MiCHiLU Labs.
 Packager: MiCHiLU Labs. <shirasu-user@michilu.com>
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Summary: Shirasu WebSocket Server
-Requires: erlang-mochiweb
-Requires: erlang-misultin
 Requires: PyYAML
+Requires: erlang-misultin
+Requires: erlang-mochiweb
+Requires: erlang-sasl
 
 %description
 Shirasu is a WebSocket server.
