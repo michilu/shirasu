@@ -9,6 +9,7 @@ WebSocket
 ---------
 
 - draft-ietf-hybi-thewebsocketprotocol-00_
+- path based channel
 
 .. _draft-ietf-hybi-thewebsocketprotocol-00:
    http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
