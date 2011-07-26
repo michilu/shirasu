@@ -1,6 +1,7 @@
 debug_setting.yaml
 deps
 ebin
+log
 tags
 
 syntax: glob
