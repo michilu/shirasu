@@ -36,6 +36,11 @@ Bundled
 Changelog
 =========
 
+0.2dev
+------
+
+- supported syslog
+
 0.1.2 - Tue Jul 12 2011
 -----------------------
 
