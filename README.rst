@@ -40,6 +40,7 @@ Changelog
 ------
 
 - supported syslog
+- added status module
 
 0.1.2 - Tue Jul 12 2011
 -----------------------
