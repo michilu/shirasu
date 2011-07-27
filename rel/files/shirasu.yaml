@@ -2,6 +2,9 @@ shirasu:
   listen:
     port: 8000
 
+shirasu_stat:
+  /stat: true
+
 shirasu_http_serve:
   /: /var/lib/shirasu/sample/www
 

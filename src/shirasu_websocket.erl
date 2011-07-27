@@ -78,13 +78,15 @@ wsManager(ChannelList) ->
             end,
             wsManager(ChannelList);
         {send, Channel, Data} ->
-            %?debugVal({send, Channel, Data}),
             case lists:keysearch(Channel, 1, ChannelList) of
                 {value, {_Channel, PidList}} ->
                     lists:map(fun(PID) -> PID ! {send, Data} end, PidList);
                 false ->
                     pass
             end,
+            wsManager(ChannelList);
+        {stat, Pid} ->
+            Pid ! {stat, ChannelList},
             wsManager(ChannelList);
         stop ->
             exit(normal);
