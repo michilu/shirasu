@@ -17,6 +17,7 @@ compile:
 	@$(REBAR) compile
 
 deps:
+	@$(REBAR) update-deps
 	@$(REBAR) get-deps
 
 clean:
@@ -69,7 +70,7 @@ serve:
 
 debug:
 	($(MAKE))
-	(erl -pa $$PWD/ebin deps/*/ebin -boot start_sasl -s shirasu -shirasu setting \"debug_setting.yaml\")
+	(erl -pa $$PWD/ebin deps/*/ebin -boot start_sasl -config debug +W w -s shirasu -shirasu setting \"debug_setting.yaml\")
 
 # Release tarball creation
 # Generates a tarball that includes all the deps sources so no checkouts are necessary

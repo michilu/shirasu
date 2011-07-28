@@ -24,9 +24,16 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
+    error_logger:tty(false),
+    error_logger:add_report_handler(erlsyslog, {0, "localhost", 514}),
     Server = {shirasu,
                 {shirasu, boot, []},
                 permanent, 5000, worker, dynamic},
 
     Processes = [Server],
     {ok, {{one_for_one, 10, 10}, Processes}}.
+
+terminate(Reason, State) ->
+    error_logger:delete_report_handler(erlsyslog),
+    error_logger:tty(true),
+    ok.

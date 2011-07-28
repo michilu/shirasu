@@ -113,6 +113,9 @@ case "$1" in
         do
             sleep 1
         done
+
+        # Log the stop
+        logger -t "$SCRIPT[$$]" "Stop"
         ;;
 
     restart)
