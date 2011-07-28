@@ -58,7 +58,8 @@ statResister({Channel, Pid}) ->
 handler(Obj) ->
     case is_pid(Obj) of
         true ->
-            list_to_bitstring(pid_to_list(Obj));
+            [String] = io_lib:format("~p", [Obj]),
+            list_to_bitstring(String);
         _Any ->
             Obj
     end.
