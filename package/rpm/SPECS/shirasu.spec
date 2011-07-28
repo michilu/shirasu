@@ -22,7 +22,8 @@ Requires: erlang-misultin
 Requires: erlang-mochiweb
 Requires: erlang-sasl
 
-%description Shirasu is a WebSocket server.
+%description
+Shirasu is a WebSocket server.
 
 %define erlang_lib %{_libdir}/erlang
 %define shirasu_lib /lib/%{name}-%{_revision}
