@@ -36,8 +36,8 @@ Bundled
 Changelog
 =========
 
-0.2dev
-------
+0.2 - Thu Jul 28 2011
+---------------------
 
 - supported syslog
 - added status module
