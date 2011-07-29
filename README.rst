@@ -38,13 +38,13 @@ ex) `/etc/shirasu/shirasu.yaml`::
   shirasu:
     listen:
       port: 8000
-  
+
   shirasu_stat:
     /stat: true
-  
+
   shirasu_http_serve:
     /: /var/lib/shirasu/sample/www
-  
+
   shirasu_http_stream:
     /stream.twitter.com/1/statuses/sample.json: "http://<SCREEN_NAME>:<PASSWORD>@stream.twitter.com/1/statuses/sample.json"
     /exchange/USDJPY:
@@ -92,8 +92,8 @@ Performance
 shirasu is used misultin that is an Erlang library for building fast lightweight HTTP servers.
 (see https://github.com/ostinelli/misultin)
 
-How to use with syslog
-======================
+How to use syslog
+=================
 
 enable to provides UDP syslog reception.
 edit `/etc/rsyslog.conf`::
