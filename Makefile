@@ -1,5 +1,5 @@
 REPO		?= shirasu
-SHIRASU_TAG	 = $(shell git describe --tags)
+SHIRASU_TAG	 = $(shell git describe --tags --always)
 REVISION	?= $(shell echo $(SHIRASU_TAG) | sed -e 's/^$(REPO)-//')
 PKG_VERSION	?= $(shell echo $(REVISION) | tr - .)
 
