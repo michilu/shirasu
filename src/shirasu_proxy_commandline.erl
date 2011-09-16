@@ -27,7 +27,11 @@ receive_command_response(Port, {Path}) ->
                       wsManager ! {send, Path, Line}
                   end
                 end, string:tokens(Data, "\r\n"));
-    _ ->
+    {Port, {exit_status, Status}} ->
+      ?debugVal(io:format("~p", [{Port, {exit_status, Status}}])),
+      pass;
+    Any ->
+      ?debugVal(io:format("~p", [Any])),
       pass
   end,
   receive_command_response(Port, {Path}).
