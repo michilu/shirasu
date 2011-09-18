@@ -12,7 +12,7 @@ start() ->
   ok.
 
 command_handler(Cmd, Opt) ->
-  Port = open_port({spawn, Cmd}, [stream, use_stdio, exit_status]),
+  Port = open_port({spawn, Cmd}, [stream, exit_status]),
   receive_command_response(Port, Opt).
 
 receive_command_response(Port, {Path}) ->
