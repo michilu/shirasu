@@ -13,6 +13,8 @@ Require
 - Python 2.x >= 2.6
 - PyYAML
 
+If you use SSL for WebSocket, required misultin 0.7 higher.
+
 Quick start
 ===========
 
@@ -129,6 +131,7 @@ Changelog
 
 0.3dev:
   - changed the format of listening port in YAML file
+  - added SSL support for WebSocket
 
 0.2:
   - supported syslog
