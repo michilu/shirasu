@@ -1,6 +1,5 @@
 shirasu:
-  listen:
-    port: 8000
+  - port: 8000
 
 shirasu_stat:
   /stat: true
