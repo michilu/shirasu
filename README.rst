@@ -36,8 +36,7 @@ You can configure the Shirasu.ws by editing YAML file.
 ex) `/etc/shirasu/shirasu.yaml`::
 
   shirasu:
-    listen:
-      port: 8000
+    - port: 8000
 
   shirasu_stat:
     /stat: true
@@ -127,6 +126,9 @@ finally, see your `package/packages` direcroty.
 
 Changelog
 =========
+
+0.3dev:
+  - changed the format of listening port in YAML file
 
 0.2:
   - supported syslog

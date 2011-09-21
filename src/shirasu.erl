@@ -21,14 +21,39 @@ boot() ->
     ok = inets:start(),
     lists:map(fun(Module) -> register(Module, spawn(Module, start, [])) end, Modules),
     spawn(shirasu_websocket, wsManager, []),
-    misultin:start_link([
-        {port, cfg(["shirasu", "listen", "port"])},
+    ServerPid = listen_port(cfg(["shirasu"])),
+    ServerPid.
+
+listen_port([{struct, PropList}|_T]) ->
+    Port = proplists:get_value(<<"port">>, PropList),
+    BaseMisultinOptions = [
+        {port, Port},
         {loop, fun(Req) ->
                     shirasu_http_serve:handle_http(Req) end},
         {ws_loop, fun(Ws) ->
                     shirasu_websocket:handle_websocket(new, Ws) end},
         {ws_autoexit, false}
-    ]).
+    ],
+    case proplists:get_value(<<"ssl">>, PropList) of
+        {struct, Cert} ->
+            MisultinOptions = BaseMisultinOptions ++ [
+                {ssl, [
+                    {certfile, binary_to_list(proplists:get_value(<<"certfile">>, Cert))},
+                    {keyfile, binary_to_list(proplists:get_value(<<"keyfile">>, Cert))},
+                    {password, binary_to_list(proplists:get_value(<<"password">>, Cert))}
+                ]}],
+            case application:get_application(crypto) of
+                undefined ->
+                    ok =  application:start(crypto),
+                    ok =  application:start(public_key);
+                {ok, crypto} ->
+                    pass
+            end;
+        undefined ->
+            MisultinOptions = BaseMisultinOptions
+    end,
+    {ok, Pid} =  misultin:start_link(MisultinOptions),
+    {ok, Pid}.
 
 cfg(Key) ->
     cfgManager ! {self(), get, Key},
