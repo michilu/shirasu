@@ -7,7 +7,7 @@
 
 start() ->
   CfgList = shirasu:cfg(["shirasu_proxy_commandline"]),
-  [{Path, Cmd}|_T] = CfgList,
+  [{Path, Cmd}|_T] = CfgList, %TODO
   Opt = {binary_to_list(Path)},
   spawn(?MODULE, commands, [Cmd, Opt]),
   ok.
