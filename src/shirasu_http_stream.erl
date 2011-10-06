@@ -81,3 +81,10 @@ splitlines(String, Parts, Index, [{NextPt, PtLen}|Matches]) ->
     [string:substr(String, Index, NextPt + PtLen - Index)] ++ Parts,
     NextPt + PtLen,
     Matches).
+
+-ifdef(EUNIT).
+splitlines_test() ->
+  ?assert(splitlines("string") =:= ["string"]),
+  ?assert(splitlines("\nstr\ning\n") =:= ["\n","str\n","ing\n",[]]),
+  ok.
+-endif.
