@@ -6,33 +6,39 @@
 -include_lib("eunit/include/eunit.hrl").
 
 start() ->
-  lists:foreach(fun({Channel, _Bool}) ->
-            case is_bitstring(Channel) of
-              true ->
-                Channel_ = bitstring_to_list(Channel);
-              false ->
-                Channel_ = Channel
-            end,
-            statResister({Channel_, spawn(?MODULE, stat, [Channel_])})
-          end,
-          getChannels()),
+  lists:foreach(
+    fun({Channel, _Bool}) ->
+      case is_bitstring(Channel) of
+        true ->
+          Channel_ = bitstring_to_list(Channel);
+        false ->
+          Channel_ = Channel
+      end,
+      statResister({Channel_, spawn(?MODULE, stat, [Channel_])})
+    end,
+    getChannels()),
   ok.
 
 stop() ->
-  lists:foreach(fun({Channel, _Bool}) ->
-            case is_bitstring(Channel) of
-              true ->
-                Channel_ = bitstring_to_list(Channel);
-              false ->
-                Channel_ = Channel
-            end,
-            wsManager ! {del, Channel_, self()}
-          end,
-          getChannels()),
+  lists:foreach(
+    fun({Channel, _Bool}) ->
+      case is_bitstring(Channel) of
+        true ->
+          Channel_ = bitstring_to_list(Channel);
+        false ->
+          Channel_ = Channel
+      end,
+      wsManager ! {del, Channel_, self()}
+    end,
+    getChannels()),
   ok.
 
 getChannels() ->
-  lists:filter(fun({_Channel, Bool}) -> Bool end, shirasu:cfg(["shirasu_stat"])).
+  lists:filter(
+    fun({_Channel, Bool}) ->
+      Bool
+    end,
+    shirasu:cfg(["shirasu_stat"])).
 
 stat(Channel) ->
   receive

@@ -19,7 +19,11 @@ boot() ->
   register(cfgManager, spawn(?MODULE, cfgManager, [PropList])),
   Modules = getModules(),
   ok = inets:start(),
-  lists:map(fun(Module) -> register(Module, spawn(Module, start, [])) end, Modules),
+  lists:map(
+    fun(Module) ->
+      register(Module, spawn(Module, start, []))
+    end,
+    Modules),
   spawn(?MODULE, wsManager, []),
   ServerPid = listen_port(cfg(["shirasu"])),
   ServerPid.
@@ -29,9 +33,11 @@ listen_port([{struct, PropList}|_T]) ->
   BaseMisultinOptions = [
     {port, Port},
     {loop, fun(Req) ->
-          shirasu_http_serve:handle_http(Req) end},
+            shirasu_http_serve:handle_http(Req)
+           end},
     {ws_loop, fun(Ws) ->
-          ?MODULE:handle_websocket(new, Ws) end},
+                ?MODULE:handle_websocket(new, Ws)
+              end},
     {ws_autoexit, false}
   ],
   case proplists:get_value(<<"ssl">>, PropList) of
@@ -80,16 +86,18 @@ print json.dumps(yaml.load(open(\"" ++ Path ++ "\")));\
 cfgManager(PropList) ->
   receive
     {Pid, get, get_keys} ->
-      Term = lists:map(fun(Key) ->
+      Term = lists:map(
+              fun(Key) ->
                 list_to_atom(bitstring_to_list(Key))
-               end,
-               proplists:get_keys(PropList)),
+              end,
+              proplists:get_keys(PropList)),
       Pid ! {ok, Term};
     {Pid, get, Keys} ->
-      KeyList = lists:map(fun(Key) ->
-                  list_to_bitstring(Key)
-                end,
-                Keys),
+      KeyList = lists:map(
+                  fun(Key) ->
+                    list_to_bitstring(Key)
+                  end,
+                  Keys),
       {ok, Value} = get_field(PropList, KeyList),
       Pid ! {ok, Value};
     _Any ->
@@ -110,13 +118,14 @@ get_field(PropList, [Key|KeyList]) ->
 
 getModules() ->
   Keys = cfg(get_keys),
-  Modules = lists:filter(fun(X) ->
+  Modules = lists:filter(
+              fun(X) ->
                 case X of
                   shirasu -> false;
                   _ -> true
                 end
-               end,
-               Keys),
+              end,
+              Keys),
   Modules.
 
 handle_websocket(Ws) ->
@@ -196,7 +205,11 @@ wsManager(ChannelList) ->
       case lists:keysearch(Channel, 1, ChannelList) of
         {value, {_Channel, PidList}} ->
           %?debugVal(io:format("~p", [{Channel, PidList, Data}])),
-          lists:map(fun(PID) -> PID ! {send, Data} end, PidList);
+          lists:map(
+            fun(PID) ->
+              PID ! {send, Data}
+            end,
+            PidList);
         false ->
           pass
       end,

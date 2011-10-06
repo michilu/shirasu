@@ -8,25 +8,26 @@
 start() ->
   CfgList = shirasu:cfg(["shirasu_http_stream"]),
   Buffer = spawn(?MODULE, buffer, []),
-  lists:foreach(fun({Channel, Url}) ->
-            case is_bitstring(Channel) of
-              true ->
-                Channel_ = bitstring_to_list(Channel);
-              false ->
-                Channel_ = Channel
+  lists:foreach(
+    fun({Channel, Url}) ->
+      case is_bitstring(Channel) of
+        true ->
+          Channel_ = bitstring_to_list(Channel);
+        false ->
+          Channel_ = Channel
+      end,
+      Fun = fun(Data) ->
+              %?debugVal({Channel_, Data}),
+              Buffer ! {Channel_, Data}
             end,
-            Fun = fun(Data) ->
-                %?debugVal({Channel_, Data}),
-                Buffer ! {Channel_, Data}
-              end,
-            case is_bitstring(Url) of
-              true ->
-                _Pid = spawn(twitter_stream, fetch, [bitstring_to_list(Url), Fun]);
-              false ->
-                _Pid = spawn(?MODULE, fetch, [Url, Fun])
-            end
-          end,
-          CfgList),
+      case is_bitstring(Url) of
+        true ->
+          _Pid = spawn(twitter_stream, fetch, [bitstring_to_list(Url), Fun]);
+        false ->
+          _Pid = spawn(?MODULE, fetch, [Url, Fun])
+      end
+    end,
+    CfgList),
   ok.
 
 stop() ->
@@ -56,11 +57,12 @@ buffer(BufferList) ->
           [Bits|Lines] = lists:reverse(splitlines(NewBuffer)),
           NewBufferList = lists:append([{Channel, Bits}], BufferList)
       end,
-      lists:map(fun(Line) ->
-              %?debugVal(Line),
-              wsManager ! {send, Channel, Line}
-            end,
-            lists:reverse(Lines));
+      lists:map(
+        fun(Line) ->
+          %?debugVal(Line),
+          wsManager ! {send, Channel, Line}
+        end,
+        lists:reverse(Lines));
     _Any ->
       NewBufferList = BufferList,
       pass
@@ -74,7 +76,8 @@ splitlines(String) ->
 splitlines(String, Parts, Index, []) ->
   lists:reverse([string:substr(String, Index)] ++ Parts);
 splitlines(String, Parts, Index, [{NextPt, PtLen}|Matches]) ->
-  splitlines(String,
-         [string:substr(String, Index, NextPt + PtLen - Index)] ++ Parts,
-         NextPt + PtLen,
-         Matches).
+  splitlines(
+    String,
+    [string:substr(String, Index, NextPt + PtLen - Index)] ++ Parts,
+    NextPt + PtLen,
+    Matches).

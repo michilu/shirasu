@@ -16,10 +16,11 @@ commands(Cmd, Opt) when is_bitstring(Cmd) ->
   command_handler(binary_to_list(Cmd), Opt),
   ok;
 commands(Cmds, Opt) ->
-  lists:map(fun(Cmd) ->
-              command_handler(binary_to_list(Cmd), Opt)
-            end,
-            Cmds),
+  lists:map(
+    fun(Cmd) ->
+      command_handler(binary_to_list(Cmd), Opt)
+    end,
+    Cmds),
   commands(Cmds, Opt).
 
 command_handler(Cmd, Opt) ->
@@ -29,15 +30,16 @@ command_handler(Cmd, Opt) ->
 receive_command_response(Port, {Path}) ->
   receive
     {Port, {data, Data}} ->
-      lists:map(fun(Line) ->
-                  case Line of
-                    [] ->
-                      pass;
-                    _ ->
-                      %?debugVal(io:format("~p", [{Path, Line}])),
-                      wsManager ! {send, Path, Line}
-                  end
-                end, string:tokens(Data, "\r\n")),
+      lists:map(
+        fun(Line) ->
+          case Line of
+            [] ->
+              pass;
+            _ ->
+              %?debugVal(io:format("~p", [{Path, Line}])),
+              wsManager ! {send, Path, Line}
+          end
+        end, string:tokens(Data, "\r\n")),
       receive_command_response(Port, {Path});
     {Port, {exit_status, _Status}} ->
       pass;
