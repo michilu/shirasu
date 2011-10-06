@@ -10,7 +10,7 @@ REBAR=./rebar
 
 .PHONY: rel deps
 
-all: deps compile
+all: deps compile eunit
 	@cd rel/files/sample ; $(MAKE)
 
 compile:
