@@ -32,8 +32,3 @@ init([]) ->
 
   Processes = [Server],
   {ok, {{one_for_one, 10, 10}, Processes}}.
-
-terminate(Reason, State) ->
-  error_logger:delete_report_handler(erlsyslog),
-  error_logger:tty(true),
-  ok.
