@@ -26,7 +26,7 @@ clean:
 distclean: clean relclean ballclean
 	@$(REBAR) delete-deps
 
-test:
+eunit:
 	@rm -rf .eunit
 	@mkdir -p .eunit
 	@$(REBAR) skip_deps=true eunit
@@ -55,9 +55,6 @@ app:
 
 xref:
 	@$(REBAR) xref
-
-eunit:
-	@$(REBAR) eunit
 
 info:
 	@$(REBAR) list-deps
