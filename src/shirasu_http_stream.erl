@@ -70,14 +70,22 @@ buffer(BufferList) ->
   buffer(NewBufferList).
 
 splitlines(String) ->
-  {match, Matches} = regexp:matches(String, "\n"),
-  splitlines(String, [], 1, Matches).
+  [Last|Parts0] = lists:reverse(re:split(String, "\n", [{return, list}])),
+  Parts1 = lists:map(
+            fun(Line) ->
+              case Line of
+                [] ->
+                  "\n";
+                Any ->
+                  Any ++ "\n"
+              end
+            end,
+            Parts0),
+  lists:reverse([Last] ++ Parts1).
 
-splitlines(String, Parts, Index, []) ->
-  lists:reverse([string:substr(String, Index)] ++ Parts);
-splitlines(String, Parts, Index, [{NextPt, PtLen}|Matches]) ->
-  splitlines(
-    String,
-    [string:substr(String, Index, NextPt + PtLen - Index)] ++ Parts,
-    NextPt + PtLen,
-    Matches).
+-ifdef(EUNIT).
+splitlines_test() ->
+  ?assert(splitlines("string") =:= ["string"]),
+  ?assert(splitlines("\nstr\ning\n") =:= ["\n","str\n","ing\n",[]]),
+  ok.
+-endif.
