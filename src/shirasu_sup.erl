@@ -17,23 +17,23 @@
 %% ===================================================================
 
 start_link() ->
-    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+  supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 %% ===================================================================
 %% Supervisor callbacks
 %% ===================================================================
 
 init([]) ->
-    error_logger:tty(false),
-    error_logger:add_report_handler(erlsyslog, {0, "localhost", 514}),
-    Server = {shirasu,
-                {shirasu, boot, []},
-                permanent, 5000, worker, dynamic},
+  error_logger:tty(false),
+  error_logger:add_report_handler(erlsyslog, {0, "localhost", 514}),
+  Server = {shirasu,
+        {shirasu, boot, []},
+        permanent, 5000, worker, dynamic},
 
-    Processes = [Server],
-    {ok, {{one_for_one, 10, 10}, Processes}}.
+  Processes = [Server],
+  {ok, {{one_for_one, 10, 10}, Processes}}.
 
 terminate(Reason, State) ->
-    error_logger:delete_report_handler(erlsyslog),
-    error_logger:tty(true),
-    ok.
+  error_logger:delete_report_handler(erlsyslog),
+  error_logger:tty(true),
+  ok.

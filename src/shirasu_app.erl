@@ -11,7 +11,7 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    shirasu_sup:start_link().
+  shirasu_sup:start_link().
 
 stop(_State) ->
-    ok.
+  ok.
