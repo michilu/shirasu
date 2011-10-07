@@ -3,6 +3,6 @@ ws = new WebSocket "ws://#{window.location["host"]}/commandline/ping"
 
 $ () ->
   ws.onmessage = (e) ->
-    $("#debug").prepend(e.data + "<br/>")
+    $("#debug").prepend(e.data)
     return
   return
