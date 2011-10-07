@@ -1,6 +1,6 @@
 -module(shirasu).
 -author('ENDOH takanao <djmchl@gmail.com>').
--export([start/0, stop/0, boot/0, cfg/1, cfgManager/1, handle_websocket/2, wsManager/0, hookManager/0]).
+-export([start/0, stop/0, boot/0, cfg/1, cfgManager/1, handle_websocket/2, wsManager/0]).
 
 -include_lib("eunit/include/eunit.hrl").
 %?debugVal(),
@@ -11,13 +11,12 @@ start() ->
 stop() ->
   wsManager ! stop,
   cfgManager ! stop,
-  hookManager ! stop,
   misultin:stop().
 
 boot() ->
   {ok, Path} = application:get_env(shirasu, setting),
   {struct, PropList} = loadConfig(Path),
-  spawn(?MODULE, hookManager, []),
+  gen_event:add_handler(shirasu_hooks, shirasu_hooks_default, []),
   register(cfgManager, spawn(?MODULE, cfgManager, [PropList])),
   Modules = getModules(),
   ok = inets:start(),
@@ -134,7 +133,7 @@ handle_websocket(Ws) ->
   receive
       {browser, Data} ->
           %?debugVal({"ws:browser", Data}),
-          hookManager ! {Ws:get(path), Data, self()},
+          gen_event:notify(shirasu_hooks, {Ws:get(path), Data, self()}),
           handle_websocket(Ws);
       closed ->
           wsManager ! {del, Ws:get(path), self()},
@@ -224,23 +223,3 @@ wsManager(ChannelList) ->
     Any ->
       ?debugVal(Any)
   end.
-
-hookManager() ->
-  register(hookManager, self()),
-  process_flag(trap_exit, true),
-  hookManager([]).
-hookManager(Hooks) ->
-  receive
-    {add} ->
-      pass;
-    {del} ->
-      pass;
-    {Path, Data, _Pid} ->
-      wsManager ! {send, Path, Data},
-      pass;
-    stop ->
-      exit(normal);
-    Any ->
-      ?debugVal(Any)
-  end,
-  hookManager(Hooks).
