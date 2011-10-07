@@ -16,6 +16,7 @@ stop() ->
 boot() ->
   {ok, Path} = application:get_env(shirasu, setting),
   {struct, PropList} = loadConfig(Path),
+  gen_event:add_handler(shirasu_hooks, shirasu_hooks_default, []),
   register(cfgManager, spawn(?MODULE, cfgManager, [PropList])),
   Modules = getModules(),
   ok = inets:start(),
@@ -132,7 +133,7 @@ handle_websocket(Ws) ->
   receive
       {browser, Data} ->
           %?debugVal({"ws:browser", Data}),
-          wsManager ! {send, Ws:get(path), Data},
+          gen_event:notify(shirasu_hooks, {Ws:get(path), Data, self()}),
           handle_websocket(Ws);
       closed ->
           wsManager ! {del, Ws:get(path), self()},
@@ -152,6 +153,7 @@ handle_websocket(Ws) ->
 handle_websocket(new, Ws) ->
   %?debugVal({"handle_websocket:new:", Ws:get(path)}),
   wsManager ! {add, Ws:get(path), self()},
+  gen_event:notify(shirasu_hooks, {add, Ws:get(path), self()}),
   handle_websocket(Ws).
 
 wsManager() ->

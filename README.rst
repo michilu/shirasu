@@ -52,6 +52,7 @@ ex) `/etc/shirasu/shirasu.yaml`::
     - "http://chartapi.finance.yahoo.com/instrument/1.0/USDJPY=X/chartdata;type=quote;range=2d/csv/"
 
   shirasu_commandline:
+    /commandline/traceroute: "traceroute google.com"
     /commandline/ping:
     - "ping -c  5 localhost"
     - "ping -c 10 localhost"

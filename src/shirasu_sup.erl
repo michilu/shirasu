@@ -26,9 +26,12 @@ start_link() ->
 init([]) ->
   error_logger:tty(false),
   error_logger:add_report_handler(erlsyslog, {0, "localhost", 514}),
+  Hooks = {shirasu_hooks,
+           {gen_event, start_link, [{local, shirasu_hooks}]},
+           permanent, 5000, worker, dynamic},
   Server = {shirasu,
             {shirasu, boot, []},
             permanent, 5000, worker, dynamic},
 
-  Processes = [Server],
+  Processes = [Hooks, Server],
   {ok, {{one_for_one, 10, 10}, Processes}}.
