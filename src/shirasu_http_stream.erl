@@ -1,7 +1,7 @@
 -module(shirasu_http_stream).
 -author('ENDOH takanao <djmchl@gmail.com>').
 
--export([start/0, stop/0, processing/1, fetch/2, buffer/0]).
+-export([start/0, stop/0, processing/1, fetch/2, buffer/0, splitlines/1]).
 
 -include_lib("eunit/include/eunit.hrl").
 

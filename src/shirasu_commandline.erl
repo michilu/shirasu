@@ -36,8 +36,13 @@ command_handler(Cmd, Path, Pid) ->
   receive_command_response(Port, Path, Pid).
 
 receive_command_response(Port, Path, Pid) ->
+  receive_command_response(Port, Path, Pid, []).
+
+receive_command_response(Port, Path, Pid, Buffer) ->
   receive
     {Port, {data, Data}} ->
+      NewBuffer = Buffer ++ Data,
+      [Bits|Lines] = lists:reverse(shirasu_http_stream:splitlines(NewBuffer)),
       lists:map(
         fun(Line) ->
           case Line of
@@ -52,8 +57,8 @@ receive_command_response(Port, Path, Pid) ->
               end
           end
         end,
-        string:tokens(Data, "\r\n")),
-      receive_command_response(Port, Path, Pid);
+        Lines),
+      receive_command_response(Port, Path, Pid, Bits);
     {Port, {exit_status, _Status}} ->
       pass;
     Any ->
