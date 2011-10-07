@@ -51,6 +51,11 @@ ex) `/etc/shirasu/shirasu.yaml`::
     /exchange/USDJPY:
     - "http://chartapi.finance.yahoo.com/instrument/1.0/USDJPY=X/chartdata;type=quote;range=2d/csv/"
 
+  shirasu_commandline:
+    /commandline/ping:
+    - "ping -c  5 localhost"
+    - "ping -c 10 localhost"
+
 Boot from source of develop version::
 
   $ git clone git://github.com/MiCHiLU/shirasu.git
@@ -132,6 +137,7 @@ Changelog
 0.3dev:
   - changed the format of listening port in YAML file
   - added SSL support for WebSocket
+  - support input from system commandline
 
 0.2:
   - supported syslog
