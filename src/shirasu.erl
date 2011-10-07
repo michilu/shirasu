@@ -153,6 +153,7 @@ handle_websocket(Ws) ->
 handle_websocket(new, Ws) ->
   %?debugVal({"handle_websocket:new:", Ws:get(path)}),
   wsManager ! {add, Ws:get(path), self()},
+  gen_event:notify(shirasu_hooks, {add, Ws:get(path), self()}),
   handle_websocket(Ws).
 
 wsManager() ->
