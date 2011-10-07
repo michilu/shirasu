@@ -33,6 +33,7 @@ Include in the demonstration:
 - Exchange Chart
 - Twitter Streaming
 - Stats
+- Commandline Monitor
 
 You can configure the Shirasu.ws by editing YAML file.
 ex) `/etc/shirasu/shirasu.yaml`::
