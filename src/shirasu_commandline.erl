@@ -1,4 +1,4 @@
--module(shirasu_proxy_commandline).
+-module(shirasu_commandline).
 -author('ENDOH takanao <djmchl@gmail.com>').
 -export([start/0, commands/2]).
 
@@ -6,7 +6,7 @@
 %?debugVal(),
 
 start() ->
-  CfgList = shirasu:cfg(["shirasu_proxy_commandline"]),
+  CfgList = shirasu:cfg(["shirasu_commandline"]),
   [{Path, Cmd}|_T] = CfgList, %TODO
   Opt = {binary_to_list(Path)},
   spawn(?MODULE, commands, [Cmd, Opt]),
