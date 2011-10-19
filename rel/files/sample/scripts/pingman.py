@@ -68,6 +68,9 @@ def traceroute(host):
 def dot(route):
     edges = list()
     keys = sorted(route.keys())
+    for hop in xrange(1, keys[-1]):
+        if not route.get(hop):
+            route[hop] = ["&lt;%s&gt;" % hop]
     for hop in keys:
         if (hop - 1) not in keys:
             continue
