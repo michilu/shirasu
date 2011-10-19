@@ -7,6 +7,7 @@ from multiprocessing import (
 import commands
 import itertools
 import json
+import os
 import re
 import sys
 import time
@@ -59,7 +60,10 @@ def traceroute(host):
             if address not in ips:
                 ips.append(address)
                 ROUTE[hop] = ips
-    out(type="traceroute", data=dot(ROUTE))
+    svg = dot(ROUTE)
+    out(type="traceroute", data=svg)
+    with open(os.path.join(os.path.dirname(__file__), "../www/traceroute.svg"), "w") as f:
+        f.write(svg)
 
 def dot(route):
     edges = list()
