@@ -37,7 +37,7 @@ def out(**kwargv):
     LOCK.release()
 
 def traceroute(host):
-    output = command("traceroute %s" % host)
+    output = command("traceroute -q 1 -w 1 %s" % host)
     hop = int()
     for line in output.splitlines():
         row = line.split()
