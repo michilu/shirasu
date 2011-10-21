@@ -70,7 +70,7 @@ def dot(route):
     keys = sorted(route.keys())
     for hop in xrange(1, keys[-1]):
         if not route.get(hop):
-            route[hop] = ["&lt;%s&gt;" % hop]
+            route[hop] = ["&lt;%s-hop&gt;" % hop]
     for hop in keys:
         if (hop - 1) not in keys:
             continue
