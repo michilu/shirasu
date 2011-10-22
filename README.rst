@@ -34,6 +34,13 @@ Include in the demonstration:
 - Twitter Streaming
 - Stats
 - Commandline Monitor
+- Network Monitor
+
+If you use `Network Monitor`, require some Python libraries ::
+
+  $ mkvirtualenv pingman
+  $ workon pingman
+  $ pip install -r rel/files/sample/scripts/pingman.packages.txt
 
 You can configure the Shirasu.ws by editing YAML file.
 ex) `/etc/shirasu/shirasu.yaml`::

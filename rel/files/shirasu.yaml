@@ -17,3 +17,5 @@ shirasu_commandline:
   /commandline/ping:
   - "ping -c  5 localhost"
   - "ping -c 10 localhost"
+  /commandline/pingman:
+  - "rel/files/sample/scripts/pingman.sh"
