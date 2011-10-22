@@ -84,10 +84,15 @@ $ () ->
         if d.packet_loss < 100
           for element in $("td:contains('#{d.ip}')")
             if $(element).text() == d.ip
-              $(element).parent("tr").remove()
-          $row = $("<tr><td>#{[d.ip, d.packet_loss, d.max, d.avg, d.min, d.stddev].join('</td><td>')}</td></tr>")
-          .prependTo("table tbody")
-          .css
+              row = $(element).parent("tr")
+              break
+          row_inner = "<td>#{[d.ip, d.packet_loss, d.max, d.avg, d.min, d.stddev].join('</td><td>')}</td>"
+          if row?
+            $row = $(row).html(row_inner)
+          else
+            $row = $("<tr>#{row_inner}</tr>")
+            .prependTo("table tbody")
+          $row.css
             "background-color": "yellow"
           setTimeout () ->
             $row.css

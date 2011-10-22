@@ -72,7 +72,7 @@
     ws_open = function() {
       ws = new WebSocket("ws://" + window.location["host"] + "/commandline/pingman");
       ws.onmessage = function(e) {
-        var $line, $row, $streams, d, element, escaped_data, i, ip, json, limit, now, packet_loss, _i, _len, _ref, _ref2;
+        var $line, $row, $streams, d, element, escaped_data, i, ip, json, limit, now, packet_loss, row, row_inner, _i, _len, _ref, _ref2;
         now = new Date();
         escaped_data = $("<div/>").text(e.data).html();
         $line = $("<span/>").text("[" + (now.getHours()) + ":" + (now.getMinutes()) + ":" + (now.getSeconds()) + "." + (now.getMilliseconds()) + "]" + escaped_data);
@@ -113,10 +113,17 @@
             for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
               element = _ref2[_i];
               if ($(element).text() === d.ip) {
-                $(element).parent("tr").remove();
+                row = $(element).parent("tr");
+                break;
               }
             }
-            $row = $("<tr><td>" + ([d.ip, d.packet_loss, d.max, d.avg, d.min, d.stddev].join('</td><td>')) + "</td></tr>").prependTo("table tbody").css({
+            row_inner = "<td>" + ([d.ip, d.packet_loss, d.max, d.avg, d.min, d.stddev].join('</td><td>')) + "</td>";
+            if (row != null) {
+              $row = $(row).html(row_inner);
+            } else {
+              $row = $("<tr>" + row_inner + "</tr>").prependTo("table tbody");
+            }
+            $row.css({
               "background-color": "yellow"
             });
             setTimeout(function() {
