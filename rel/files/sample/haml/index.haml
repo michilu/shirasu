@@ -1,0 +1,51 @@
+!!!
+%html
+  %head
+    %title Samples - Shirasu WebSocket Server
+    %link{:rel=>"stylesheet", :href=>"/stylesheets/bootstrap-1.3.0.min.css"}
+    %script{:src=>"/scripts/jquery-1.6.4.min.js"}
+    %script{:src=>"/scripts/chat.js"}
+    %style
+      body {padding-top:60px;}
+      div.topbar img {width:20px;}
+      pre#stream {height:272px;overflow:hidden;boader:0;color:rgba(0,0,0,0.2);}
+      div.hero-unit {margin-top:-308px;background-color:rgba(0,0,0,0);}
+      div#chat .log {height:200px;overflow:auto;}
+  %body
+    .topbar
+      .topbar-inner
+        .container
+          %a.brand Shirasu
+          %ul.nav
+            %li.active
+              %a{:href=>"chat.html"} Dash Board
+            %li
+              %a{:href=>"chat.html"} Chat
+            %li
+              %a{:href=>"exchange.html"} Exchange Chart
+            %li
+              %a{:href=>"twitter.html"} Twitter Streaming
+            %li
+              %a{:href=>"stats.html"} Stats
+            %li
+              %a{:href=>"commandline.html"} Commandline Monitor
+            %li
+              %a{:href=>"pingman.html"} Network Monitor
+          %p.pull-right
+            %img{:src=>"http://www.w3.org/html/logo/downloads/HTML5_1Color_White.svg"}
+            %a{:href=>"http://shirasu.ws/"} &copy; Shirasu.ws 2011
+    .container
+      %pre#stream
+      .hero-unit
+        %h1 Shirasu WebSocket Server
+        %p Shirasu.ws is a WebSocket server framework based on Misultin and Erlang/OTP.
+        %p
+          %a.btn.primary.large Learn more &raquo;
+      .row
+        #chat.span6
+          %h2 Chat
+          %input.text{:type=>"text", :placeholder=>"write something...", :required=>"required"}
+          %input.btn{:type=>"submit", :value=>"Say"}
+          .log
+        .span6
+        .span6
