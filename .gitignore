@@ -3,6 +3,7 @@ debug_setting.yaml
 deps
 ebin
 log
+rel/files/sample/www/traceroute.svg
 tags
 
 syntax: glob

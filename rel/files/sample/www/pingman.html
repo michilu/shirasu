@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Network Monitor - Shirasu WebSocket Server</title>
+    <link href='/stylesheets/bootstrap-1.3.0.min.css' rel='stylesheet'>
+    <script src='/scripts/jquery-1.6.4.min.js'></script>
+    <script src='/scripts/pingman.js'></script>
+    <script src='/scripts/jquery.tablesorter.min.js'></script>
+    <style>
+      svg {width:100%;}
+      pre#stream {height:300px;overflow:auto;}
+    </style>
+  </head>
+  <body>
+    <div class='topbar'>
+      <div class='topbar-inner'>
+        <div class='container-fluid'>
+          <a class='brand'>Network Monitor</a>
+          <p class='pull-left'>
+            <a>powered by HTML5 / WebSocket</a>
+          </p>
+          <p class='pull-right'>
+            <a href='http://shirasu.ws/'>Shirasu WebSocket Server &copy; Shirasu.ws 2011</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class='container-fluid'>
+      <div class='span10' id='svg'>
+        <h3>
+          <br>
+          Network Topology
+          <div class='pull-right'>
+            <span class='label'>invisible node</span>
+            <span class='label success'>ok</span>
+            <span class='label warning'>no response</span>
+            <span class='label important'>packet loss</span>
+          </div>
+        </h3>
+      </div>
+      <div class='span12'>
+        <div class='hero-unit'>
+          <h3>
+            WebSocket Stream
+          </h3>
+          <pre class='prettyprint' id='stream'></pre>
+          <h3>Nodes</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>IP</th>
+                <th>packet loss</th>
+                <th>max</th>
+                <th>avg</th>
+                <th>min</th>
+                <th>stddev</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
