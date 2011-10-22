@@ -8,12 +8,12 @@ Require
 
 - Erlang R14B
 - Erlang - System Application Support Libraries (SASL)
-- misultin
+- misultin 0.9-dev higher
 - mochiweb
 - Python 2.x >= 2.6
 - PyYAML
 
-If you use SSL for WebSocket, required misultin 0.7 higher.
+If you use WebSocket protocol hybi-10, required misultin 0.9-dev higher.
 
 Quick start
 ===========
@@ -71,7 +71,7 @@ Features
 WebSocket
 ---------
 
-- draft-ietf-hybi-thewebsocketprotocol-00
+- draft-ietf-hybi-thewebsocketprotocol-10
 - path based channel
 
 Basic
