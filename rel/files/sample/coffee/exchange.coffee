@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 ws = new WebSocket "ws://#{window.location["host"]}/exchange/USDJPY"
-count = 70
-buffer = 300
+count = 50
 recieved = 0
 flag = null
 stop = null
@@ -16,7 +15,7 @@ google.setOnLoadCallback () ->
     stop = true
   google.visualization.events.addListener chart, 'onmouseout', () ->
     stop = false
-  drawVisualization [["loading...",100,100,100,100]], 'out'
+  drawVisualization [["loading...",50,50,50,50]], 'out'
   return
 
 drawVisualization = (raws, hAxis_textPosition) ->
@@ -24,7 +23,7 @@ drawVisualization = (raws, hAxis_textPosition) ->
   dataTable = google.visualization.arrayToDataTable raws, true
   # Draw the chart.
   chart.draw dataTable,
-    title: "Exchange Chart via WebSocket: USD/JPY (buffering #{data.length} data, recieved #{recieved} data)"
+    title: "USD/JPY"
     legend: 'none'
     hAxis:
       textPosition: hAxis_textPosition ? 'none'
@@ -41,10 +40,10 @@ setInterval () ->
 
 $ () ->
   ws.onopen = () ->
-    #ws.send 'hello'
     return
   ws.onmessage = (e) ->
-    #$("#debug").text(e.data)
+    d = Util.parse(e)
+    Util.stream(d)
     recieved += 1
     if e.data and flag
       line = e.data
@@ -54,6 +53,5 @@ $ () ->
         for i ,index in rows[1..4]
           rows[index+1] = parseFloat i
         data.push rows
-    #s.send 'ok'
     return
   return

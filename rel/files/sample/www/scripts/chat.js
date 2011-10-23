@@ -1,40 +1,49 @@
 (function() {
   $(function() {
-    var chat, escape, parse, stream;
-    escape = function(data) {
-      return $("<div/>").text(data).html();
-    };
-    stream = function(d) {
-      var data, line, now;
-      now = new Date();
-      data = d.data;
-      if (data[data.length - 1] !== "\n") {
-        data += "\n";
+    var chat;
+    window.Util = {
+      escape: function(data) {
+        return $("<div/>").text(data).html();
+      },
+      parse: function(e) {
+        var hours, milliseconds, minutes, now, result, seconds;
+        now = new Date();
+        hours = now.getHours();
+        minutes = now.getMinutes();
+        seconds = now.getSeconds();
+        milliseconds = now.getMilliseconds();
+        if (hours < 10) {
+          hours = "0" + hours;
+        }
+        if (minutes < 10) {
+          minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+          seconds = "0" + seconds;
+        }
+        result = {
+          data: escape(e.data),
+          time: [hours, minutes, seconds, milliseconds]
+        };
+        return result;
+      },
+      stream: function(d) {
+        var $stream, data, max;
+        max = 1965;
+        $stream = $("#stream");
+        if ($stream.text().length + d.data.length <= max) {
+          return $stream.append(d.data);
+        } else {
+          data = d.data.slice(max - $stream.text().length, d.data.length);
+          while (true) {
+            if (data.length <= max) {
+              break;
+            }
+            data = data.slice(max, data.length);
+          }
+          return $stream.text(data);
+        }
       }
-      line = "[" + (d.time.slice(0, 3).join(':')) + "." + d.time[3] + "]&nbsp;" + data;
-      return $("#stream").prepend(line);
-    };
-    parse = function(e) {
-      var hours, milliseconds, minutes, now, result, seconds;
-      now = new Date();
-      hours = now.getHours();
-      minutes = now.getMinutes();
-      seconds = now.getSeconds();
-      milliseconds = now.getMilliseconds();
-      if (hours < 10) {
-        hours = "0" + hours;
-      }
-      if (minutes < 10) {
-        minutes = "0" + minutes;
-      }
-      if (seconds < 10) {
-        seconds = "0" + seconds;
-      }
-      result = {
-        data: escape(e.data),
-        time: [hours, minutes, seconds, milliseconds]
-      };
-      return result;
     };
     chat = {
       connect: function() {
@@ -52,8 +61,8 @@
       },
       _onmessage: function(e) {
         var $line, d;
-        d = parse(e);
-        stream(d);
+        d = Util.parse(e);
+        Util.stream(d);
         $line = $("<p/>").html("" + (d.time.slice(0, 3).join(':')) + "&raquo;&nbsp;" + d.data);
         $("#chat .log").prepend($line);
       },

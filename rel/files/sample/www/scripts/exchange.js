@@ -1,8 +1,7 @@
 (function() {
-  var buffer, chart, count, data, drawVisualization, flag, recieved, stop, ws;
+  var chart, count, data, drawVisualization, flag, recieved, stop, ws;
   ws = new WebSocket("ws://" + window.location["host"] + "/exchange/USDJPY");
-  count = 70;
-  buffer = 300;
+  count = 50;
   recieved = 0;
   flag = null;
   stop = null;
@@ -19,13 +18,13 @@
     google.visualization.events.addListener(chart, 'onmouseout', function() {
       return stop = false;
     });
-    drawVisualization([["loading...", 100, 100, 100, 100]], 'out');
+    drawVisualization([["loading...", 50, 50, 50, 50]], 'out');
   });
   drawVisualization = function(raws, hAxis_textPosition) {
     var dataTable;
     dataTable = google.visualization.arrayToDataTable(raws, true);
     chart.draw(dataTable, {
-      title: "Exchange Chart via WebSocket: USD/JPY (buffering " + data.length + " data, recieved " + recieved + " data)",
+      title: "USD/JPY",
       legend: 'none',
       hAxis: {
         textPosition: hAxis_textPosition != null ? hAxis_textPosition : 'none'
@@ -44,7 +43,9 @@
   $(function() {
     ws.onopen = function() {};
     ws.onmessage = function(e) {
-      var i, index, line, rows, _len, _ref;
+      var d, i, index, line, rows, _len, _ref;
+      d = Util.parse(e);
+      Util.stream(d);
       recieved += 1;
       if (e.data && flag) {
         line = e.data;
