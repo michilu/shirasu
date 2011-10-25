@@ -49,9 +49,18 @@ fetch(URL, Callback) ->
 fetch(URL, Callback, Retry, Sleep) when Retry > 0 ->
   % setup the request to process async
   % and have it stream the data back to this process
+  lists:map(fun(Atom) ->
+              case application:get_application(Atom) of
+                undefined ->
+                  ok = application:start(Atom);
+                {ok, Atom} ->
+                  pass
+              end
+            end,
+            [crypto, public_key, ssl]),
   try http:request(get, 
                     {URL, []},
-                    [], 
+                    [{ssl,[{verify,0}]}],
                     [{sync, false}, 
                      {stream, self}]) of
     {ok, RequestId} ->
