@@ -26,8 +26,8 @@ boot() ->
     end,
     Modules),
   spawn(?MODULE, wsManager, []),
-  ServerPid = listen_port(cfg(["shirasu"])),
-  ServerPid.
+  {ok, Pid} = listen_port(cfg(["shirasu"])),
+  {ok, Pid}.
 
 listen_port([{struct, PropList}|_T]) ->
   Port = proplists:get_value(<<"port">>, PropList),
@@ -59,8 +59,13 @@ listen_port([{struct, PropList}|_T]) ->
     undefined ->
       MisultinOptions = BaseMisultinOptions
   end,
-  {ok, Pid} =  misultin:start_link(MisultinOptions),
-  {ok, Pid}.
+  case misultin:start_link(MisultinOptions) of
+    {ok, Pid} ->
+      {ok, Pid};
+    Any ->
+      %error_logger:error_msg("HTTP server has not started: ~p~n", [Any]), %TODO(endoh)
+      Any
+  end.
 
 cfg(Key) ->
   cfgManager ! {self(), get, Key},
