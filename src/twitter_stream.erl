@@ -63,7 +63,7 @@ fetch(URL, Callback, Retry, Sleep) when Retry > 0 ->
     _ ->
       pass
   end,
-  try http:request(get, 
+  try httpc:request(get,
                     {URL, []},
                     [{ssl,[{verify,0}]}],
                     [{sync, false}, 
