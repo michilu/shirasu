@@ -138,6 +138,11 @@ checkout from Shiwasu.ws repository, and build RPM package::
   $ make dist
   $ RELEASE=1 make package
 
+When used in fedora 14, You can reduce the package size.
+Use this command instead of `$ make dist`::
+
+  $ make dist4fedora
+
 finally, see your `package/packages` direcroty.
 
 Changelog
