@@ -134,6 +134,7 @@ checkout from Shiwasu.ws repository, and build RPM package::
 
   $ git clone git://github.com/MiCHiLU/shirasu.git
   $ cd shirasu
+  $ git fetch --tag
   $ git checkout shirasu-0.2
   $ make dist
   $ RELEASE=1 make package

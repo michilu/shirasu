@@ -86,8 +86,22 @@ cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/releases \
 		%{buildroot}%{erlang_lib}/lib/%{name}-%{_version}
 #cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/doc/man/man1/*.gz \
 #		%{buildroot}%{_mandir}/man1
-cp -r $RPM_BUILD_DIR/%{name}-%{_revision}/rel/files/sample/www \
-		%{buildroot}%{_localstatedir}/lib/%{name}/sample
+install -d \
+	%{buildroot}%{_localstatedir}/lib/%{name}/sample/www/scripts
+install -d \
+	%{buildroot}%{_localstatedir}/lib/%{name}/sample/www/stylesheets
+install -p -m 0644 \
+	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/files/sample/www/scripts/* \
+	%{buildroot}%{_localstatedir}/lib/%{name}/sample/www/scripts
+install -p -m 0644 \
+	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/files/sample/www/stylesheets/* \
+	%{buildroot}%{_localstatedir}/lib/%{name}/sample/www/stylesheets
+install -p -m 0644 \
+	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/files/sample/www/*.html \
+	%{buildroot}%{_localstatedir}/lib/%{name}/sample/www
+install -p -m 0644 \
+	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/files/sample/www/*.ico \
+	%{buildroot}%{_localstatedir}/lib/%{name}/sample/www
 install -p -D -m 0644 \
 	$RPM_BUILD_DIR/%{name}-%{_revision}/rel/%{name}/etc/app.config \
 	%{buildroot}%{_sysconfdir}/%{name}/
