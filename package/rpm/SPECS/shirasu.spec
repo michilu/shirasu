@@ -18,7 +18,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Summary: Shirasu WebSocket Server
 Requires: PyYAML
 Requires: erlang-erlsyslog
-Requires: erlang-misultin
 Requires: erlang-mochiweb
 Requires: erlang-sasl
 

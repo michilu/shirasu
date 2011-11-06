@@ -104,7 +104,15 @@ buildtar4f = mkdir distdir && \
 		 git clone . distdir/shirasu-clone && \
 		 cd distdir/shirasu-clone && \
 		 git checkout $(SHIRASU_TAG) && \
-		 $(call archive,$(SHIRASU_TAG),..)
+		 $(call archive,$(SHIRASU_TAG),..) && \
+		 mkdir ../$(SHIRASU_TAG)/deps && \
+		 make deps; \
+		 for dep in deps/misultin; do \
+                     cd $${dep} && \
+                     $(call archive,$${dep},../../../$(SHIRASU_TAG)) && \
+                     mkdir -p ../../../$(SHIRASU_TAG)/$${dep}/priv && \
+                     git rev-list --max-count=1 HEAD > ../../../$(SHIRASU_TAG)/$${dep}/priv/git.vsn && \
+                     cd ../..; done
 
 distdir4f:
 	$(if $(SHIRASU_TAG), $(call buildtar4f), $(error "You can't generate a release tarball from a non-tagged revision. Run 'git checkout <tag>', then 'make dist'"))

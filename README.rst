@@ -13,14 +13,14 @@ Require
 - Python 2.x >= 2.6
 - PyYAML
 
-If you use WebSocket protocol hybi-10, required misultin 0.9-dev higher.
+Now, included misultin.
 
 Quick start
 ===========
 
 Install and boot for Fedora 14::
 
-  $ sudo yum install -y PyYAML erlang-erlsyslog erlang-misultin erlang-mochiweb erlang-sasl
+  $ sudo yum install -y PyYAML erlang-erlsyslog erlang-mochiweb erlang-sasl
   $ sudo rpm -ivh http://shirasu.googlecode.com/files/shirasu-0.2-1.fc14.i386.rpm
   $ sudo service shirasu start
 
@@ -152,6 +152,7 @@ Changelog
   - changed the format of listening port in YAML file
   - added SSL support for WebSocket
   - support input from system commandline
+  - included misultin
 
 0.2:
   - supported syslog
