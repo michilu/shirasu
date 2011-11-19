@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var chat;
+    var chat, send;
     window.Util = {
       parse: function(e) {
         var hours, milliseconds, minutes, now, result, seconds;
@@ -67,11 +67,19 @@
         this._ws = null;
       }
     };
-    $("#chat input:submit").click(function() {
+    send = function() {
       var $text;
       $text = $("#chat .text");
       chat.send($text.val());
       $text.val("").focus();
+    };
+    $("#chat input.text").keydown(function(e) {
+      if (e.which === 13) {
+        send();
+      }
+    });
+    $("#chat input:submit").click(function() {
+      send();
     });
     return chat.connect();
   });

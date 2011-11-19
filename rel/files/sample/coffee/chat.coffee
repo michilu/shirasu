@@ -44,9 +44,16 @@ $ () ->
     _onclose: (e) ->
       @._ws = null
       return
-  $("#chat input:submit").click () ->
+  send = () ->
     $text = $("#chat .text")
     chat.send $text.val()
     $text.val("").focus()
+    return
+  $("#chat input.text").keydown (e) ->
+    if e.which is 13
+      send()
+    return
+  $("#chat input:submit").click () ->
+    send()
     return
   chat.connect()
