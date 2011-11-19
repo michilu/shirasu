@@ -2,9 +2,6 @@
   $(function() {
     var chat;
     window.Util = {
-      escape: function(data) {
-        return $("<div/>").text(data).html();
-      },
       parse: function(e) {
         var hours, milliseconds, minutes, now, result, seconds;
         now = new Date();
@@ -22,7 +19,7 @@
           seconds = "0" + seconds;
         }
         result = {
-          data: escape(e.data),
+          data: e.data,
           time: [hours, minutes, seconds, milliseconds]
         };
         return result;

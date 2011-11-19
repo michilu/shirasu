@@ -1,7 +1,5 @@
 $ () ->
   window.Util =
-    escape: (data) ->
-      return $("<div/>").text(data).html()
     parse: (e) ->
       now = new Date()
       hours = now.getHours()
@@ -12,7 +10,7 @@ $ () ->
       if minutes < 10 then minutes = "0#{minutes}"
       if seconds < 10 then seconds = "0#{seconds}"
       result =
-        data: escape(e.data)
+        data: e.data
         time: [hours, minutes, seconds, milliseconds]
       return result
     stream : (d) ->
