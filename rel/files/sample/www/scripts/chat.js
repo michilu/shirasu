@@ -29,7 +29,7 @@
         max = 1965;
         $stream = $("#stream");
         if ($stream.text().length + d.data.length <= max) {
-          return $stream.append(d.data);
+          $stream.append(d.data);
         } else {
           data = d.data.slice(max - $stream.text().length, d.data.length);
           while (true) {
@@ -38,7 +38,7 @@
             }
             data = data.slice(max, data.length);
           }
-          return $stream.text(data);
+          $stream.text(data);
         }
       }
     };
@@ -81,6 +81,6 @@
     $("#chat input:submit").click(function() {
       send();
     });
-    return chat.connect();
+    chat.connect();
   });
 }).call(this);

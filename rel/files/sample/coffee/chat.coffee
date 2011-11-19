@@ -25,6 +25,7 @@ $ () ->
             break
           data = data[max...data.length]
         $stream.text(data)
+      return
   chat =
     connect: () ->
       @._ws = new WebSocket "ws://"+window.location["host"]+"/chat"
@@ -57,3 +58,4 @@ $ () ->
     send()
     return
   chat.connect()
+  return
