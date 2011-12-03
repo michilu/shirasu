@@ -72,7 +72,7 @@ Boot from source of develop version::
   $ git checkout dev
   $ make debug
 
-.. image:: https://secure.travis-ci.org/MiCHiLU/shirasu.png
+.. image:: https://secure.travis-ci.org/MiCHiLU/shirasu.png?branch=dev
 
 Features
 ========
